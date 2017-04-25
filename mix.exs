@@ -7,7 +7,8 @@ defmodule GenMetrics.Mixfile do
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     description: "Elixir GenServer and GenStage runtime metrics.",
+     description: description(),
+     package: package(),
      deps: deps(),
      docs: [main: "GenMetrics", source_url: "https://github.com/onetapbeyond/gen_metrics"]]
   end
@@ -34,6 +35,21 @@ defmodule GenMetrics.Mixfile do
     [{:gen_stage, "~> 0.11"},
      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
      {:credo, "~> 0.7", only: [:dev, :test]}]
+  end
+
+  defp description do
+    """
+    Elixir GenServer and GenStage runtime metrics.
+    """
+  end
+
+  defp package do
+    [
+      name: :gen_metrics,
+      maintainers: ["David Russell"],
+      licenses: ["Apache 2.0"],
+      links: %{"GitHub" => "https://github.com/onetapbeyond/gen_metrics"}
+    ]
   end
 
 end
