@@ -19,7 +19,7 @@ GenMetrics.monitor_pipeline(pipeline)
 
 ## Documentation
 
-Find detailed documentation for the GenMetrics library on [HexDocs](https://hexdocs.pm/gen_stage).
+Find detailed documentation for the GenMetrics library on [HexDocs](https://hexdocs.pm/gen_metrics).
 
 ## Installation
 
