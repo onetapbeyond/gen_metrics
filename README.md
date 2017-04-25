@@ -6,7 +6,7 @@ This library supports the collection and publication of GenServer and GenStage r
 
 ## Documentation
 
-See detailed documentation for the GenMetrics library on [HexDocs](https://hexdocs.pm/gen_stage).
+Find detailed documentation for the GenMetrics library on [HexDocs](https://hexdocs.pm/gen_stage).
 
 ## Examples
 
