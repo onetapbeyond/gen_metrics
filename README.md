@@ -8,6 +8,16 @@ This library supports the collection and publication of GenServer and GenStage r
 
 Find detailed documentation for the GenMetrics library on [HexDocs](https://hexdocs.pm/gen_stage).
 
+## Installation
+
+GenStage requires Elixir v1.4. Just add `:gen_metrics` to your list of dependencies in mix.exs:
+
+```elixir
+def deps do
+  [{:gen_metrics, "~> 0.1.0"}]
+end
+```
+
 ## Examples
 
 Examples using GenMetrics to collect and report runtime metrics for GenServer applications can be found in the [examples](examples) directory:
@@ -22,17 +32,7 @@ Examples using GenMetrics to collect and report runtime metrics for GenStage app
 
   * [genstage_rate_limiter](examples/genstage_rate_limiter.exs)
 
-All of these GenStage example applications are clones of the example applications provided in the [GenStage] project repository](http://github.com/elixir-lang/gen_stage).
-
-## Installation
-
-GenStage requires Elixir v1.4. Just add `:gen_metrics` to your list of dependencies in mix.exs:
-
-```elixir
-def deps do
-  [{:gen_metrics, "~> 0.1.0"}]
-end
-```
+All of these GenStage example applications are clones of the example applications provided in the [GenStage](http://github.com/elixir-lang/gen_stage) project repository.
 
 ## License
 
