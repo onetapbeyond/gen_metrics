@@ -103,7 +103,7 @@ defmodule GenMetrics.GenStage.Manager do
     for {stage, pids} <- metrics.stages, pid <- pids, into: [] do
       summary = generate_stage_summary(Map.get(metrics.summary_paired,
             pid, Metric.no_pair))
-      %Summary{summary | stage: stage, pid: pid}
+      %Summary{summary | name: stage, pid: pid}
     end
   end
 

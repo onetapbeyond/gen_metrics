@@ -412,20 +412,71 @@ defmodule GenMetrics do
 
   @doc """
   Activate metrics collection and publishing for one or more GenServers.
+
+  ## Example Usage
+
+  Assuming an application has a `Session.Server` and a `Logging.Server` you
+  can activate metrics collection on both GenServers as follows:
+
+  ```
+  alias GenMetrics.GenServer.Cluster
+  cluster = %Cluster{name: "demo",
+                     servers: [Session.Server, Logging.Server],
+                     opts: [window_interval: 5000]}
+  GenMetrics.monitor_cluster(cluster)
+  ```
+
+  ## Cluster Validation
+
+  When this function is called the GenMetrics library checks and verifies
+  the following conditions are met:
+
+  1. All server modules specified on the cluster can be located and loaded
+  1. All server modules specified on the cluster implement the GenServer
+  behaviour
+
+  If every module in the cluster does not meet these conditions the
+  function terminates with a `:bad_cluster` response and related error messages.
   """
   @spec monitor_cluster(%Cluster{}) ::
   {:ok, pid} | {:error, :bad_server, [String.t]}
-  def monitor_cluster(cluster) do
+  def monitor_cluster(%Cluster{} = cluster) do
     Supervisor.start_child(GenServer.Supervisor, [cluster])
   end
 
   @doc """
   Activate metrics collection and publishing for one or more stages
   within a GenStage pipeline.
+
+  ## Example Usage
+
+  Assuming a GenStage application has a `Data.Producer`, a `Data.Scrubber`,
+  a `Data.Analyzer` and a `Data.Consumer`, you can activate metrics
+  collection for the entire pipeline as follows:
+
+  ```
+  alias GenMetrics.GenStage.Pipeline
+  pipeline = %Pipeline{name: "demo",
+                       producer: [Data.Producer],
+                       producer_consumer: [Data.Scrubber, Data.Analyzer],
+                       consumer: [Data.Consumer]}
+  GenMetrics.monitor_pipeline(pipeline)
+  ```
+
+  ## Pipeline Validation
+
+  When this function is called the GenMetrics library checks and verifies
+  the following conditions are met:
+
+  1. All stage modules specified on the pipeline can be located and loaded
+  1. All stage modules specified on the pipeline implement the GenStage behaviour
+
+  If every module in the pipeline does not meet these conditions the
+  function terminates with a `:bad_pipeline` response and related error messages.
   """
   @spec monitor_pipeline(%Pipeline{}) ::
   {:ok, pid} | {:error, :bad_pipeline, [String.t]}
-  def monitor_pipeline(pipeline) do
+  def monitor_pipeline(%Pipeline{} = pipeline) do
     Supervisor.start_child(GenStage.Supervisor, [pipeline])
   end
 

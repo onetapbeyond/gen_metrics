@@ -7,7 +7,7 @@ defmodule GenMetrics.GenStage.Summary do
 
   The fields are:
 
-  * `stage` - the module name for the GenStage process
+  * `name` - the module name for the GenStage process
 
   * `pid` - the `pid` for the GenStage process
 
@@ -20,7 +20,7 @@ defmodule GenMetrics.GenStage.Summary do
   * `events` - the number of events emitted by the GenStage process
   """
 
-  defstruct stage: nil, pid: nil,
+  defstruct name: nil, pid: nil,
     callbacks: 0, time_on_callbacks: 0, demand: 0, events: 0
 
 end

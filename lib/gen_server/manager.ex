@@ -111,7 +111,7 @@ defmodule GenMetrics.GenServer.Manager do
         Map.get(metrics.summary_paired, mkey, Metric.no_pair)
       end
       summary = generate_server_summary(metrics_on_pid)
-      %Summary{summary | server: server, pid: pid}
+      %Summary{summary | name: server, pid: pid}
     end
   end
 

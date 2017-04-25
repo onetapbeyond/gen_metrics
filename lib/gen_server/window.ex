@@ -15,8 +15,7 @@ defmodule GenMetrics.GenServer.Window do
   * `summary` - a list of `GenMetrics.GenServer.Summary`, item per process
   on the pipeline
 
-  * `stats` - (optional) a list of `GenMetrics.GenServer.Stats`, item per
-  process on the pipeline
+  * `stats` - (optional) a list of `GenMetrics.GenServer.Server`
   """
 
   defstruct cluster: nil, start: 0, duration: 0, stats: [], summary: []

@@ -15,8 +15,7 @@ defmodule GenMetrics.GenStage.Window do
   * `summary` - a list of `GenMetrics.GenStage.Summary`, item per process
   on the pipeline
 
-  * `stats` - (optional) a list of `GenMetrics.GenStage.Stats`, item per
-  process on the pipeline
+  * `stats` - (optional) a list of `GenMetrics.GenStage.Stage`
   """
 
   defstruct pipeline: nil, start: 0, duration: 0, stats: [], summary: []

@@ -7,7 +7,7 @@ defmodule GenMetrics.GenServer.Summary do
 
   The fields are:
 
-  * `server` - the module name for the GenServer process
+  * `name` - the module name for the GenServer process
 
   * `pid` - the `pid` for the GenServer process
 
@@ -24,7 +24,7 @@ defmodule GenMetrics.GenServer.Summary do
   * `time_on_infos` - the number of milliseconds spent on infos
   """
 
-  defstruct server: nil, pid: nil,
+  defstruct name: nil, pid: nil,
     calls: 0, casts: 0, infos: 0,
     time_on_calls: 0, time_on_casts: 0, time_on_infos: 0
 
