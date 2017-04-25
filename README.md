@@ -6,7 +6,7 @@ This library supports the collection and publication of GenServer and GenStage r
 
 ## Quick Look
 
-Assuming a GenStage application has a Data.Producer, a Data.Scrubber, a Data.Analyzer and a Data.Consumer. Activate metrics collection for the entire pipeline as follows:
+Given a GenStage application with the following stages: Data.Producer, Data.Scrubber, Data.Analyzer and a Data.Consumer. Activate metrics collection for the entire pipeline as follows:
 
 ```elixir
 alias GenMetrics.GenStage.Pipeline
