@@ -19,7 +19,7 @@ pipeline = %Pipeline{name: "demo",
 GenMetrics.monitor_pipeline(pipeline)
 ```
 
-Metrics are published by a dedicated GenMetrics reporting process. Any application can subscribe to this process in order to aggregate, render, persist, or generally handle metrics data. Sample summary metrics data for a GenStage process looks as follows:
+Metrics are published by a dedicated GenMetrics reporting process. Any application can subscribe to this process in order to receive metrics data. Sample summary metrics data for a GenStage process looks as follows:
 
 ```
 # Stage Name: Data.Producer, PID<0.195.0>
@@ -30,9 +30,11 @@ Metrics are published by a dedicated GenMetrics reporting process. Any applicati
                              time_on_callbacks: 407,
                              demand: 4768000,
                              events: 4768000}
+
+# Summary timings measured in milliseconds (ms).
 ```
 
-Detailed statistical metrics data is also available and detailed in the documentation.
+Detailed statistical metrics data per process is also available. See the documentation for details.
 
 ## Documentation
 
