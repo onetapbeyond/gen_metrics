@@ -49,7 +49,7 @@ GenMetrics.monitor_cluster(cluster)
 
 #### GenServer Summary Metrics
 
-#### Sample GenServer Process Metrics Data
+#### Sample Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -82,7 +82,7 @@ GenMetrics.monitor_cluster(cluster)
 
 #### GenServer Statistical Metrics
 
-#### Sample GenServer Process Statistical Metrics Data
+#### Sample Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -101,7 +101,7 @@ GenMetrics.monitor_cluster(cluster)
 
 #### GenServer Statistical Metrics
 
-#### Sample GenServer Process Statistical Metrics Data
+#### Sample Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -120,7 +120,7 @@ GenMetrics.monitor_cluster(cluster)
 
 #### GenServer Statistical Metrics
 
-#### Sample GenServer Process Statistical Metrics Data
+#### Sample Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
