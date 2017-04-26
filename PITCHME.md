@@ -9,7 +9,7 @@
 - Summary Metrics
 - Plus optional Statistical Metrics
 - For any GenServer or GenStage Application
-- <b>Without</b> requiring code instrumentation <!-- .element: class="fragment" -->
+- Without requiring code instrumentation <!-- .element: class="fragment" -->
 
 ---
 
