@@ -286,7 +286,7 @@ GenMetrics.monitor_pipeline(pipeline)
 
 +++
 
-### GenMetrics.GenServer.Reporter
+#### GenMetrics.GenServer.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
 
@@ -326,7 +326,7 @@ end
 
 +++
 
-### GenMetrics.GenStage.Reporter
+#### GenMetrics.GenStage.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
 
