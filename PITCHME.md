@@ -278,13 +278,15 @@ GenMetrics.monitor_pipeline(pipeline)
 - Metrics are published periodically
 - By a dedicated reporting process
 - Any application can subscribe for metrics events
-- Can then aggregate, render, persist, etc metrics data
+- Can aggregate, render, persist, etc metrics data
 
 ---
 
 ### GenServer Metrics Reporting
 
-Subscribe to **GenMetrics.GenServer.Reporter**
++++
+
+### GenMetrics.GenServer.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
 
@@ -322,7 +324,9 @@ end
 
 ### GenStage Metrics Reporting
 
-Subscribe to **GenMetrics.GenStage.Reporter**
++++
+
+### GenMetrics.GenStage.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
 
