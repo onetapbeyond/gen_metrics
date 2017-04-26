@@ -1,3 +1,5 @@
+[![GitPitch](https://gitpitch.com/assets/badge.svg)](https://gitpitch.com/onetapbeyond/gen_metrics)
+
 # GenMetrics
 
 Runtime metrics for GenServer and GenStage applications.
