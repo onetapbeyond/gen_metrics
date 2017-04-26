@@ -154,7 +154,8 @@ GenMetrics.monitor_cluster(cluster)
 ```elixir
 alias GenMetrics.GenStage.Pipeline
 pipeline = %Pipeline{name: "demo",
-                     producer_consumer: [Data.Scrubber, Data.Analyzer],
+                     producer_consumer:
+                     [Data.Scrubber, Data.Analyzer],
                      opts: [window_interval: 5000]}
 GenMetrics.monitor_pipeline(pipeline)
 ```
@@ -185,7 +186,8 @@ GenMetrics.monitor_pipeline(pipeline)
 ```elixir
 alias GenMetrics.GenStage.Pipeline
 pipeline = %Pipeline{name: "demo",
-                     producer_consumer: [Data.Scrubber, Data.Analyzer],
+                     producer_consumer:
+                     [Data.Scrubber, Data.Analyzer],
                      opts: [statistics: true]}
 GenMetrics.monitor_pipeline(pipeline)
 ```
