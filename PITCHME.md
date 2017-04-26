@@ -153,7 +153,7 @@ GenMetrics.monitor_cluster(cluster)
 - Number of `demand` and `events` callbacks
 - Time taken on these callbacks
 - Size of upstream demand
-- Size of events emitted
+- Size of events emitted to meet demand
 - Plus optional detailed statistical metrics
 
 +++
