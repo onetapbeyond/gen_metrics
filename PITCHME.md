@@ -61,13 +61,15 @@ GenMetrics.monitor_cluster(cluster)
                               time_on_calls: 28,
                               time_on_casts: 161,
                               time_on_infos: 15}
+
+# Summary timings measured in milliseconds (ms).
 ```
 
 +++
 
 #### GenServer Statistical Metrics
 
-#### Optional activation as follows:
+#### Optional Activation
 
 ```elixir
 alias GenMetrics.GenServer.Cluster
@@ -94,6 +96,8 @@ GenMetrics.monitor_cluster(cluster)
                             range: 147,
                             stdev: 2,
                             total: 25753}
+
+# Statistical timings measured in microseconds (µs).
 ```
 
 +++
@@ -113,6 +117,8 @@ GenMetrics.monitor_cluster(cluster)
                             range: 3366,
                             stdev: 31,
                             total: 141383}
+
+# Statistical timings measured in microseconds (µs).
 ```
 
 +++
@@ -132,6 +138,8 @@ GenMetrics.monitor_cluster(cluster)
                             range: 35,
                             stdev: 2,
                             total: 13510}
+
+# Statistical timings measured in microseconds (µs).
 ```
 
 ---
@@ -176,13 +184,15 @@ GenMetrics.monitor_pipeline(pipeline)
                              time_on_callbacks: 407,
                              demand: 4768000,
                              events: 4768000}
+
+# Summary timings measured in milliseconds (ms).
 ```
 
 +++
 
 #### GenStage Statistical Metrics
 
-#### Optional activation as follows:
+#### Optional Activation
 
 ```elixir
 alias GenMetrics.GenStage.Pipeline
@@ -210,6 +220,8 @@ GenMetrics.monitor_pipeline(pipeline)
                            range: 0,
                            stdev: 0,
                            total: 4768000}
+
+# Statistical timings measured in microseconds (µs).
 ```
 
 +++
@@ -227,6 +239,8 @@ GenMetrics.monitor_pipeline(pipeline)
                            range: 0,
                            stdev: 0,
                            total: 4768000}
+
+# Statistical timings measured in microseconds (µs).
 ```
 
 +++
@@ -244,4 +258,6 @@ GenMetrics.monitor_pipeline(pipeline)
                            range: 2955,
                            stdev: 38,
                            total: 403170}
+
+# Statistical timings measured in microseconds (µs).
 ```
