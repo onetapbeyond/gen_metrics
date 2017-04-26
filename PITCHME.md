@@ -364,6 +364,6 @@ end
 
 #### GenMetrics is open source...
 
-- <a target="_blank" href="https://hexdocs.pm/gen_metrics/GenMetrics.html>The Documentation</a>
+- <a target="_blank" href="https://hexdocs.pm/gen_metrics/GenMetrics.html">The Hex Docs</a>
 - <a target="_blank" href="https://onetapbeyond/gen_stage">The GitHub Repo</a>
 - Welcome feeback, PRs, issues, etc.
