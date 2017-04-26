@@ -44,6 +44,8 @@ cluster = %Cluster{name: "demo",
                    servers: [Session.Server, Logging.Server]}
 
 GenMetrics.monitor_cluster(cluster)
+
+# Here Session.Server and Logging.Server are example GenServers.
 ```
 
 +++
@@ -81,6 +83,8 @@ cluster = %Cluster{name: "demo",
                    opts: [statistics: true]}
 
 GenMetrics.monitor_cluster(cluster)
+
+# Here Session.Server and Logging.Server are example GenServers.
 ```
 
 +++
@@ -174,6 +178,8 @@ pipeline = %Pipeline{name: "demo",
                      consumer: [Data.Consumer]}
 
 GenMetrics.monitor_pipeline(pipeline)
+
+# Here Data.* are simply example GenStages.
 ```
 
 +++
@@ -210,6 +216,8 @@ pipeline = %Pipeline{name: "demo",
                      opts: [statistics: true]}
 
 GenMetrics.monitor_pipeline(pipeline)
+
+# Here Data.Scrubber and Data.Analyzer are example GenStages.
 ```
 
 +++
