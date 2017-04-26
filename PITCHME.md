@@ -39,7 +39,7 @@ GenMetrics.monitor_cluster(cluster)
 
 #### GenServer Summary Metrics
 
-Metrics data collected on the following callbacks:
+#### Metrics data collected on the following callbacks:
 
 - GenServer.handle_call/3
 - GenServer.handle_cast/2
@@ -49,7 +49,7 @@ Metrics data collected on the following callbacks:
 
 #### GenServer Summary Metrics
 
-Sample GenServer Process Metrics Data
+#### Sample GenServer Process Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -68,7 +68,7 @@ Sample GenServer Process Metrics Data
 
 #### GenServer Statistical Metrics
 
-Optional activation as follows:
+#### Optional activation as follows:
 
 ```elixir
 alias GenMetrics.GenServer.Cluster
@@ -82,7 +82,7 @@ GenMetrics.monitor_cluster(cluster)
 
 #### GenServer Statistical Metrics
 
-Sample GenServer Process Statistical Metrics Data
+#### Sample GenServer Process Statistical Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -101,7 +101,7 @@ Sample GenServer Process Statistical Metrics Data
 
 #### GenServer Statistical Metrics
 
-Sample GenServer Process Statistical Metrics Data
+#### Sample GenServer Process Statistical Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -120,7 +120,7 @@ Sample GenServer Process Statistical Metrics Data
 
 #### GenServer Statistical Metrics
 
-Sample GenServer Process Statistical Metrics Data
+#### Sample GenServer Process Statistical Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
