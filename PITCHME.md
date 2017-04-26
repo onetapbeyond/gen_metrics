@@ -4,10 +4,18 @@
 
 ---
 
-### gen_metrics
+## Runtime Metrics
 
-- New Hex Package
-- For GenServer and GenStage runtime metrics
-- Metrics data collection and publication
-- Without need for instrumentation
- 
+- Summary Metrics
+- Plus optional Statistical Metrics
+- For any GenServer or GenStage Application
+
+---
+
+### Hex Package
+
+```elixir
+def deps do
+  [{:gen_metrics, "~> 0.1.0"}]
+end
+```
