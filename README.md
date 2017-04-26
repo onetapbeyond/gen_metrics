@@ -8,7 +8,7 @@ This library supports the collection and publication of GenServer and GenStage r
 
 ## Quick Look
 
-Given a GenStage application with the following stages: `Data.Producer`, `Data.Scrubber`, `Data.Analyzer` and a `Data.Consumer`. Activate metrics collection for the entire pipeline as follows:
+Given a GenStage application with the following stages: `Data.Producer`, `Data.Scrubber`, `Data.Analyzer` and a `Data.Consumer`, activate metrics collection for the entire pipeline as follows:
 
 ```elixir
 alias GenMetrics.GenStage.Pipeline
@@ -18,6 +18,23 @@ pipeline = %Pipeline{name: "demo",
                      consumer: [Data.Consumer]}
 GenMetrics.monitor_pipeline(pipeline)
 ```
+
+Metrics are published by a dedicated GenMetrics reporting process. Any application can subscribe to this process in order to receive metrics data. Sample summary metrics data for a GenStage process looks as follows:
+
+```
+# Stage Name: Data.Producer, PID<0.195.0>
+
+%GenMetrics.GenStage.Summary{stage: Data.Producer,
+                             pid: #PID<0.195.0>,
+                             callbacks: 9536,
+                             time_on_callbacks: 407,
+                             demand: 4768000,
+                             events: 4768000}
+
+# Summary timings measured in milliseconds (ms).
+```
+
+Detailed statistical metrics data per process are also available. See the documentation for details.
 
 ## Documentation
 
