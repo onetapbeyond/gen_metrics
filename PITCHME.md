@@ -4,7 +4,7 @@
 
 ---
 
-### Runtime Metrics
+### Application Runtime Metrics
 
 - Summary Metrics
 - Plus optional Statistical Metrics
