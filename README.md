@@ -34,7 +34,7 @@ Metrics are published by a dedicated GenMetrics reporting process. Any applicati
 # Summary timings measured in milliseconds (ms).
 ```
 
-Detailed statistical metrics data per process is also available. See the documentation for details.
+Detailed statistical metrics data per process are also available. See the documentation for details.
 
 ## Documentation
 
