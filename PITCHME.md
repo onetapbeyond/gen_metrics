@@ -27,7 +27,7 @@ end
 
 +++
 
-#### GenServer Metrics Per Server
+#### GenServer Metrics Per Server Process
 
 - Number of `call`, `cast`, and `info` callbacks
 - Time taken on these callbacks
@@ -156,7 +156,7 @@ GenMetrics.monitor_cluster(cluster)
 
 +++
 
-#### GenStage Metrics Per Stage
+#### GenStage Metrics Per Stage Process
 
 - Number of `demand` and `events` callbacks
 - Time taken on these callbacks
@@ -286,7 +286,7 @@ GenMetrics.monitor_pipeline(pipeline)
 - Metrics are published periodically
 - By a dedicated reporting process
 - Any application can subscribe for metrics events
-- Can aggregate, render, persist, etc metrics data
+- Then aggregate, render, persist, etc metrics data
 
 ---
 
@@ -314,7 +314,7 @@ end
 
 +++
 
-#### Handle GenMetrics Events
+#### Handling GenMetrics Events
 
 ```elixir
 def handle_events([metrics | _], _from, state) do
@@ -354,7 +354,7 @@ end
 
 +++
 
-#### Handle GenMetrics Events
+#### Handling GenMetrics Events
 
 ```elixir
 def handle_events([metrics | _], _from, state) do
