@@ -12,7 +12,7 @@
 
 ---
 
-### Hex Package
+### Hex Package Dependency
 
 ```elixir
 def deps do
@@ -26,6 +26,14 @@ end
 
 +++
 
+#### GenServer Metrics Per Server
+
+- Number of callbacks
+- Time taken on callbacks
+- Optional statistical metrics
+
++++
+
 #### GenMetrics Activation
 
 ```elixir
@@ -34,16 +42,6 @@ cluster = %Cluster{name: "demo",
                    servers: [Session.Server, Logging.Server]}
 GenMetrics.monitor_cluster(cluster)
 ```
-
-+++
-
-#### GenServer Summary Metrics
-
-#### Metrics data collected on the following callbacks:
-
-- GenServer.handle_call/3
-- GenServer.handle_cast/2
-- GenServer.handle_info/2
 
 +++
 
@@ -133,4 +131,114 @@ GenMetrics.monitor_cluster(cluster)
                             range: 35,
                             stdev: 2,
                             total: 13510}
+```
+
+---
+
+### GenStage Metrics
+
++++
+
+#### GenStage Metrics Per Stage
+
+- Number of callbacks
+- Time taken on callbacks
+- Size of upstream demand
+- Size of events emitted
+- Optional statistical metrics
+
++++
+
+#### GenStage Activation
+
+```elixir
+alias GenMetrics.GenStage.Pipeline
+pipeline = %Pipeline{name: "demo",
+                     producer_consumer: [Data.Scrubber, Data.Analyzer],
+                     opts: [window_interval: 5000]}
+GenMetrics.monitor_pipeline(pipeline)
+```
+
++++
+
+#### GenStage Summary Metrics
+
+#### Sample Metrics Data
+
+```elixir
+# Stage Name: Data.Producer, PID<0.195.0>
+
+%GenMetrics.GenStage.Summary{stage: Data.Producer,
+                             pid: #PID<0.195.0>,
+                             callbacks: 9536,
+                             time_on_callbacks: 407,
+                             demand: 4768000,
+                             events: 4768000}
+```
+
++++
+
+#### GenStage Statistical Metrics
+
+#### Optional activation as follows:
+
+```elixir
+alias GenMetrics.GenStage.Pipeline
+pipeline = %Pipeline{name: "demo",
+                     producer_consumer: [Data.Scrubber, Data.Analyzer],
+                     opts: [statistics: true]}
+GenMetrics.monitor_pipeline(pipeline)
+```
+
++++
+
+#### GenStage Statistical Metrics
+
+#### Sample Metrics Data
+
+```elixir
+# Stage Name: Data.Producer, PID<0.195.0>
+
+# callback demand
+%GenMetrics.GenStage.Stats{callbacks: 9536,
+                           max: 500,
+                           mean: 500,
+                           min: 500,
+                           range: 0,
+                           stdev: 0,
+                           total: 4768000}
+```
+
++++
+
+#### GenStage Statistical Metrics
+
+#### Sample Metrics Data
+
+```elixir
+# callback events
+%GenMetrics.GenStage.Stats{callbacks: 9536,
+                           max: 500,
+                           mean: 500,
+                           min: 500,
+                           range: 0,
+                           stdev: 0,
+                           total: 4768000}
+```
+
++++
+
+#### GenStage Statistical Metrics
+
+#### Sample Metrics Data
+
+```elixir
+# callback timings
+%GenMetrics.GenStage.Stats{callbacks: 9536,
+                           max: 2979,
+                           mean: 42,
+                           min: 24,
+                           range: 2955,
+                           stdev: 38,
+                           total: 403170}
 ```
