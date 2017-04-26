@@ -28,9 +28,9 @@ end
 
 #### GenServer Metrics Per Server
 
-- Number of callbacks
-- Time taken on callbacks
-- Optional statistical metrics
+- Number of `call`, `cast`, and `info` callbacks
+- Time taken on these callbacks
+- Plus optional detailed statistical metrics
 
 +++
 
@@ -141,11 +141,11 @@ GenMetrics.monitor_cluster(cluster)
 
 #### GenStage Metrics Per Stage
 
-- Number of callbacks
-- Time taken on callbacks
+- Number of `demand` and `events` callbacks
+- Time taken on these callbacks
 - Size of upstream demand
 - Size of events emitted
-- Optional statistical metrics
+- Plus optional detailed statistical metrics
 
 +++
 
