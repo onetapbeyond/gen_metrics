@@ -275,7 +275,7 @@ GenMetrics.monitor_pipeline(pipeline)
 
 ### GenMetrics Reporting
 
-- Metrics are published on a periodic window interval
+- Metrics are published periodically
 - By a dedicated reporting process
 - Any application can subscribe for metrics events
 - Can then aggregate, render, persist, etc metrics data
@@ -284,7 +284,8 @@ GenMetrics.monitor_pipeline(pipeline)
 
 ### GenServer Metrics Reporting
 
-Subscribe to *GenMetrics.GenServer.Reporter*
+Subscribe to **GenMetrics.GenServer.Reporter**
+
 <span style="color:gray">A GenStage Broadcasting Producer</span>
 
 +++
@@ -317,5 +318,40 @@ def handle_events([metrics | _], _from, state) do
 end
 ```
 
+---
 
+### GenStage Metrics Reporting
 
+Subscribe to **GenMetrics.GenStage.Reporter**
+
+<span style="color:gray">A GenStage Broadcasting Producer</span>
+
++++
+
+#### Subscribing For GenMetrics Events
+
+```elixir
+def init(:ok) do
+
+  {:consumer, :state_does_not_matter,
+   subscribe_to:
+   [{GenMetrics.GenStage.Reporter, max_demand: 1}]}
+
+end
+```
+
++++
+
+#### Handle GenMetrics Events
+
+```elixir
+def handle_events([metrics | _], _from, state) do
+
+  for summary <- metrics.summary do
+    Logger.info "GenMetrics.Consumer: #{inspect summary}"
+  end
+
+  {:noreply, [], state}
+
+end
+```
