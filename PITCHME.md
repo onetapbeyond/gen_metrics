@@ -39,8 +39,10 @@ end
 
 ```elixir
 alias GenMetrics.GenServer.Cluster
+
 cluster = %Cluster{name: "demo",
                    servers: [Session.Server, Logging.Server]}
+
 GenMetrics.monitor_cluster(cluster)
 ```
 
@@ -73,9 +75,11 @@ GenMetrics.monitor_cluster(cluster)
 
 ```elixir
 alias GenMetrics.GenServer.Cluster
+
 cluster = %Cluster{name: "demo",
                    servers: [Session.Server, Logging.Server],
                    opts: [statistics: true]}
+
 GenMetrics.monitor_cluster(cluster)
 ```
 
@@ -162,11 +166,13 @@ GenMetrics.monitor_cluster(cluster)
 
 ```elixir
 alias GenMetrics.GenStage.Pipeline
+
 pipeline = %Pipeline{name: "demo",
                      producer: [Data.Producer],
                      producer_consumer:
                      [Data.Scrubber, Data.Analyzer],
                      consumer: [Data.Consumer]}
+
 GenMetrics.monitor_pipeline(pipeline)
 ```
 
@@ -197,10 +203,12 @@ GenMetrics.monitor_pipeline(pipeline)
 
 ```elixir
 alias GenMetrics.GenStage.Pipeline
+
 pipeline = %Pipeline{name: "demo",
                      producer_consumer:
                      [Data.Scrubber, Data.Analyzer],
                      opts: [statistics: true]}
+
 GenMetrics.monitor_pipeline(pipeline)
 ```
 
