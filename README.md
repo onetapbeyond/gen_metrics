@@ -1,4 +1,5 @@
 [![GitPitch](https://gitpitch.com/assets/badge.svg)](https://gitpitch.com/onetapbeyond/gen_metrics)
+[![Hex Version](https://img.shields.io/hexpm/v/gen_metrics.svg "Hex Version")](https://hex.pm/packages/gen_metrics)
 
 # GenMetrics
 
