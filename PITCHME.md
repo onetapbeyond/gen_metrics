@@ -16,7 +16,8 @@ behaviours and realtime metrics collection and reporting by GenMetrics.
 - Without requiring changes to existing code <!-- .element: class="fragment" -->
 
 Note:
-Introduce GenServer, GenStage behaviours on OTP. Emphasize introspection.
+Introduce GenServer, GenStage behaviours on OTP. Emphasize metrics
+by introspection.
 
 ---
 
@@ -44,7 +45,8 @@ Mention detailed HexDocs documentation available on hexdocs.pm.
 - Plus optional detailed statistical metrics
 
 Note:
-Elaborate on differences between summary and statistical metrics.
+Explain that *callbacks* are the *unit-of-work* in a GenServer.
+Also elaborate on differences between summary and statistical metrics.
 
 +++
 
@@ -62,7 +64,7 @@ GenMetrics.monitor_cluster(cluster)
 ```
 
 Note:
-Point out that GenMetrics has it's own supervision tree.
+Point out that GenMetrics provides it's own supervision tree.
 
 +++
 
@@ -86,7 +88,7 @@ Point out that GenMetrics has it's own supervision tree.
 ```
 
 Note:
-For example, explain how *calls* and *time_on_calls* relate.
+Provide example by explaining how *calls* and *time_on_calls* relate.
 
 +++
 
@@ -107,7 +109,7 @@ GenMetrics.monitor_cluster(cluster)
 ```
 
 Note:
-Mention additional *opts* such as *window_interval*.
+Mention additional *opts* such as *window_interval* and how it works.
 
 +++
 
@@ -132,6 +134,7 @@ Mention additional *opts* such as *window_interval*.
 
 Note:
 Briefly explain how statistical metrics are captured and calculated.
+Recommend judicious use.
 
 +++
 
@@ -211,7 +214,8 @@ GenMetrics.monitor_pipeline(pipeline)
 ```
 
 Note:
-Mention monitoring supports both complete and partial pipelines.
+Mention GenMetrics monitoring supports both complete and
+partial pipelines.
 
 +++
 
@@ -233,7 +237,8 @@ Mention monitoring supports both complete and partial pipelines.
 ```
 
 Note:
-Explain *callbacks*, *demand*, and *events* concepts.
+Explain *callbacks*, *demand*, and *events* concepts and
+how they are reflected in the metrics data shown.
 
 +++
 
@@ -342,6 +347,9 @@ Emphasize separation of metrics collection, reporting, and consumption.
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
 
+Note:
+Clarify that the producer name is registered by GenMetrics.
+
 +++
 
 #### Subscribing For GenMetrics Events
@@ -406,7 +414,7 @@ end
 ```
 
 Note:
-Clarify that the producer name is registered by GenMetrics.
+Again clarify that the producer name is registered by GenMetrics.
 
 +++
 
