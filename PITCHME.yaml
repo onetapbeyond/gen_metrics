@@ -1,2 +1,3 @@
 theme : sky
 logo : priv/assets/img/elixir-logo.png
+revealjs: 3.4.1

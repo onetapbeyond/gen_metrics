@@ -2,6 +2,10 @@
 
 <span style="color:gray">Elixir GenServer and GenStage Runtime Metrics</span>
 
+Note:
+Provide brief background, then state agenda: GenSever + GenStage
+behaviours and realtime metrics collection and reporting by GenMetrics.
+
 ---
 
 ### Application Runtime Metrics
@@ -10,6 +14,10 @@
 - Plus optional Statistical Metrics
 - For any GenServer or GenStage Application
 - Without requiring changes to existing code <!-- .element: class="fragment" -->
+
+Note:
+Introduce GenServer, GenStage behaviours on OTP. Emphasize metrics
+by introspection.
 
 ---
 
@@ -20,6 +28,9 @@ def deps do
   [{:gen_metrics, "~> 0.1.0"}]
 end
 ```
+
+Note:
+Mention detailed HexDocs documentation available on hexdocs.pm.
 
 ---
 
@@ -32,6 +43,10 @@ end
 - Number of `call`, `cast`, and `info` callbacks
 - Time taken on these callbacks
 - Plus optional detailed statistical metrics
+
+Note:
+Explain that *callbacks* are the *unit-of-work* in a GenServer.
+Also elaborate on differences between summary and statistical metrics.
 
 +++
 
@@ -47,6 +62,9 @@ GenMetrics.monitor_cluster(cluster)
 
 # Here Session.Server and Logging.Server are example GenServers.
 ```
+
+Note:
+Point out that GenMetrics provides it's own supervision tree.
 
 +++
 
@@ -69,6 +87,9 @@ GenMetrics.monitor_cluster(cluster)
 # Summary timings measured in milliseconds (ms).
 ```
 
+Note:
+Provide example by explaining how *calls* and *time_on_calls* relate.
+
 +++
 
 #### GenServer Statistical Metrics
@@ -86,6 +107,9 @@ GenMetrics.monitor_cluster(cluster)
 
 # Here Session.Server and Logging.Server are example GenServers.
 ```
+
+Note:
+Mention additional *opts* such as *window_interval* and how it works.
 
 +++
 
@@ -107,6 +131,10 @@ GenMetrics.monitor_cluster(cluster)
 
 # Statistical timings measured in microseconds (µs).
 ```
+
+Note:
+Briefly explain how statistical metrics are captured and calculated.
+Recommend judicious use.
 
 +++
 
@@ -164,6 +192,9 @@ GenMetrics.monitor_cluster(cluster)
 - Size of events emitted to meet demand
 - Plus optional detailed statistical metrics
 
+Note:
+Briefly discuss GenStage demand, events and back-pressure.
+
 +++
 
 #### GenStage Activation
@@ -181,6 +212,10 @@ GenMetrics.monitor_pipeline(pipeline)
 
 # Here Data.* are simply example GenStages.
 ```
+
+Note:
+Mention GenMetrics monitoring supports both complete and
+partial pipelines.
 
 +++
 
@@ -201,6 +236,10 @@ GenMetrics.monitor_pipeline(pipeline)
 # Summary timings measured in milliseconds (ms).
 ```
 
+Note:
+Explain *callbacks*, *demand*, and *events* concepts and
+how they are reflected in the metrics data shown.
+
 +++
 
 #### GenStage Statistical Metrics
@@ -219,6 +258,9 @@ GenMetrics.monitor_pipeline(pipeline)
 
 # Here Data.Scrubber and Data.Analyzer are example GenStages.
 ```
+
+Note:
+Again mention availability of *window_interval* option.
 
 +++
 
@@ -240,6 +282,10 @@ GenMetrics.monitor_pipeline(pipeline)
 
 # Statistical timings measured in microseconds (µs).
 ```
+
+Note:
+Note GenStage summary metrics split across *demand*, *events*
+and *timings* as we will see on the following slides.
 
 +++
 
@@ -288,6 +334,9 @@ GenMetrics.monitor_pipeline(pipeline)
 - Any application can subscribe for metrics events
 - Then aggregate, render, persist, etc metrics data
 
+Note:
+Emphasize separation of metrics collection, reporting, and consumption.
+
 ---
 
 ### GenServer Metrics Reporting
@@ -297,6 +346,9 @@ GenMetrics.monitor_pipeline(pipeline)
 #### GenMetrics.GenServer.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
+
+Note:
+Clarify that the producer name is registered by GenMetrics.
 
 +++
 
@@ -311,6 +363,10 @@ def init(:ok) do
 
 end
 ```
+
+Note:
+Mention the reporting process is a *BroadcastDispatcher*
+producer so there is opportunity for filtering using *selector*.
 
 +++
 
@@ -327,6 +383,11 @@ def handle_events([metrics | _], _from, state) do
 
 end
 ```
+
+Note:
+Explain metrics can be analyzed or processed in any number
+of ways including logging, persistence, Statsd, Graphana,
+DataDog, etc.
 
 ---
 
@@ -352,6 +413,9 @@ def init(:ok) do
 end
 ```
 
+Note:
+Again clarify that the producer name is registered by GenMetrics.
+
 +++
 
 #### Handling GenMetrics Events
@@ -375,3 +439,7 @@ end
 - <a target="_blank" href="https://hexdocs.pm/gen_metrics/GenMetrics.html">The Hex Docs</a>
 - <a target="_blank" href="https://github.com/onetapbeyond/gen_metrics">The GitHub Repo</a>
 - Welcome feedback, PRs, issues, etc.
+
+Note:
+Encourage the audience to get involved, test, report, contribute.
+
