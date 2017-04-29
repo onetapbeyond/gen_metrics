@@ -3,7 +3,8 @@
 <span style="color:gray">Elixir GenServer and GenStage Runtime Metrics</span>
 
 Note:
-Provide brief background, then state agenda for this presentation.
+Provide brief background, then state agenda: GenSever + GenStage
+behaviours and realtime metrics collection and reporting by GenMetrics.
 
 ---
 
@@ -85,7 +86,7 @@ Point out that GenMetrics has it's own supervision tree.
 ```
 
 Note:
-For example, explain how *calls* and *time_on_calls* relates.
+For example, explain how *calls* and *time_on_calls* relate.
 
 +++
 
@@ -210,7 +211,7 @@ GenMetrics.monitor_pipeline(pipeline)
 ```
 
 Note:
-Mention monitoring supporting complete and partial pipelines.
+Mention monitoring supports both complete and partial pipelines.
 
 +++
 
@@ -356,8 +357,8 @@ end
 ```
 
 Note:
-Mention the producer is a *BroadcastDispatcher* so there is
-an opportunity for filtering using *selector*.
+Mention the reporting process is a *BroadcastDispatcher*
+producer so there is opportunity for filtering using *selector*.
 
 +++
 
@@ -377,7 +378,8 @@ end
 
 Note:
 Explain metrics can be analyzed or processed in any number
-of ways including logging, persistence, stats, DataDog, etc.
+of ways including logging, persistence, Statsd, Graphana,
+DataDog, etc.
 
 ---
 
