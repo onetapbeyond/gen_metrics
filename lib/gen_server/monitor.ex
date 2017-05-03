@@ -32,49 +32,49 @@ defmodule GenMetrics.GenServer.Monitor do
 
   def handle_info({:trace_ts, pid, :call, {mod, fun, _args}, ts}, state) do
     {:noreply,
-     do_intercept_call_request(state, pid, mod, fun, ts)}
+     do_intercept_call_request(state, mod, pid, fun, ts)}
   end
 
   # Intercept {:reply, reply, new_state}
-  def handle_info({:trace_ts, pid, :return_from, {_mod, fun, _arity},
+  def handle_info({:trace_ts, pid, :return_from, {mod, fun, _arity},
                    {:reply, _, _}, ts}, state) do
     {:noreply,
-     do_intercept_call_response(state, pid, fun, ts)}
+     do_intercept_call_response(state, mod, pid, fun, ts)}
   end
 
   # Intercept {:reply, reply, new_state, timeout | :hibernate}
-  def handle_info({:trace_ts, pid, :return_from, {_mod, fun, _arity},
+  def handle_info({:trace_ts, pid, :return_from, {mod, fun, _arity},
                    {:reply, _, _, _}, ts}, state) do
     {:noreply,
-     do_intercept_call_response(state, pid, fun, ts)}
+     do_intercept_call_response(state, mod, pid, fun, ts)}
   end
 
   # Intercept {:noreply, new_state}
-  def handle_info({:trace_ts, pid, :return_from, {_mod, fun, _arity},
+  def handle_info({:trace_ts, pid, :return_from, {mod, fun, _arity},
                    {:noreply, _}, ts}, state) do
     {:noreply,
-     do_intercept_call_response(state, pid, fun, ts)}
+     do_intercept_call_response(state, mod, pid, fun, ts)}
   end
 
   # Intercept {:noreply, new_state, timeout | :hibernate}
-  def handle_info({:trace_ts, pid, :return_from, {_mod, fun, _arity},
+  def handle_info({:trace_ts, pid, :return_from, {mod, fun, _arity},
                    {:noreply, _, _}, ts}, state) do
     {:noreply,
-     do_intercept_call_response(state, pid, fun, ts)}
+     do_intercept_call_response(state, mod, pid, fun, ts)}
   end
 
   # Intercept {:stop, reason, reply, new_state}
-  def handle_info({:trace_ts, pid, :return_from, {_mod, fun, _arity},
+  def handle_info({:trace_ts, pid, :return_from, {mod, fun, _arity},
                    {:stop, _, _, _}, ts}, state) do
     {:noreply,
-     do_intercept_call_response(state, pid, fun, ts)}
+     do_intercept_call_response(state, mod, pid, fun, ts)}
   end
 
   # Intercept {:stop, reason, new_state}
-  def handle_info({:trace_ts, pid, :return_from, {_mod, fun, _arity},
+  def handle_info({:trace_ts, pid, :return_from, {mod, fun, _arity},
                    {:stop, _, _}, ts}, state) do
     {:noreply,
-     do_intercept_call_response(state, pid, fun, ts)}
+     do_intercept_call_response(state, mod, pid, fun, ts)}
   end
 
   # Report and rollover metrics window.
@@ -161,27 +161,27 @@ defmodule GenMetrics.GenServer.Monitor do
     |> Runtime.require_behaviour(behaviour)
   end
 
-  defp do_intercept_call_request(state, pid, mod, fun, ts) do
+  defp do_intercept_call_request(state, mod, pid, fun, ts) do
     if fun in @call_cast_info do
-      do_open_metric(state, pid, mod, fun, ts)
+      do_open_metric(state, mod, pid, fun, ts)
     else
       state
     end
   end
 
-  defp do_intercept_call_response(state, pid, fun, ts) do
-    do_close_metric(state, pid, fun, ts)
+  defp do_intercept_call_response(state, mod, pid, fun, ts) do
+    do_close_metric(state, mod, pid, fun, ts)
   end
 
   # Open partial metric on handle_ function call trace.
-  defp do_open_metric(state, pid, mod, fun, ts) do
+  defp do_open_metric(state, mod, pid, fun, ts) do
     metrics =
-      Manager.open_summary_metric(state.metrics, pid, mod, fun, ts)
+      Manager.open_summary_metric(state.metrics, mod, pid, fun, ts)
     state = %Monitor{state | metrics: metrics}
 
     if statistics?(state) do
       metrics =
-        Manager.open_stats_metric(state.metrics, pid, mod, fun, ts)
+        Manager.open_stats_metric(state.metrics, {mod, pid, fun, ts})
       %Monitor{state | metrics: metrics}
     else
       state
@@ -189,13 +189,13 @@ defmodule GenMetrics.GenServer.Monitor do
   end
 
   # Close complete metric on handle_ function return trace.
-  defp do_close_metric(state, pid, events, ts) do
+  defp do_close_metric(state, mod, pid, events, ts) do
     metrics = Manager.close_summary_metric(state.metrics, pid, events, ts)
     state = %Monitor{state | metrics: metrics}
 
     if statistics?(state) do
-      metrics =
-        Manager.close_stats_metric(state.metrics, pid, events, ts)
+      metrics = Manager.close_stats_metric(state.cluster,
+        state.metrics, {mod, pid, events, ts})
       %Monitor{state | metrics: metrics}
     else
       state

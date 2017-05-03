@@ -3,7 +3,7 @@ defmodule GenMetrics.Mixfile do
 
   def project do
     [app: :gen_metrics,
-     version: "0.1.0",
+     version: "0.2.0",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -33,6 +33,7 @@ defmodule GenMetrics.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [{:gen_stage, "~> 0.11"},
+     {:statix, ">= 0.0.0"},
      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
      {:credo, "~> 0.7", only: [:dev, :test]}]
   end

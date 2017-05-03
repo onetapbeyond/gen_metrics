@@ -7,6 +7,7 @@ defmodule GenMetrics.GenServer.Manager do
   alias GenMetrics.GenServer.Metric
   alias GenMetrics.Utils.Math
   alias GenMetrics.Utils.Runtime
+  alias GenMetrics.Utils.StatsPush
 
   @moduledoc false
 
@@ -25,22 +26,22 @@ defmodule GenMetrics.GenServer.Manager do
              stats_partials: metrics.stats_partials}
   end
 
-  def open_summary_metric(metrics, pid, mod, fun, ts) do
+  def open_summary_metric(metrics, mod, pid, fun, ts) do
     metrics = register_pid_on_server(metrics, mod, pid)
-    do_open_summary_metric(metrics, pid, mod, fun, ts)
+    do_open_summary_metric(metrics, mod, pid, fun, ts)
   end
 
   def close_summary_metric(metrics, pid, events, ts) do
     do_close_summary_metric(metrics, pid, events, ts)
   end
 
-  def open_stats_metric(metrics, pid, mod, fun, ts) do
+  def open_stats_metric(metrics, {mod, pid, fun, ts}) do
     metrics = register_pid_on_server(metrics, mod, pid)
-    do_open_stats_metric(metrics, pid, fun, ts)
+    do_open_stats_metric(metrics, {pid, fun, ts})
   end
 
-  def close_stats_metric(metrics, pid, events, ts) do
-    do_close_stats_metric(metrics, pid, events, ts)
+  def close_stats_metric(cluster, metrics, {mod, pid, events, ts}) do
+    do_close_stats_metric(cluster, metrics, {mod, pid, events, ts})
   end
 
   def as_window(metrics, gen_stats) do
@@ -64,7 +65,7 @@ defmodule GenMetrics.GenServer.Manager do
     %Manager{metrics | servers: servers}
   end
 
-  defp do_open_summary_metric(metrics, pid, _mod, fun, ts) do
+  defp do_open_summary_metric(metrics, _mod, pid, fun, ts) do
     mkey = as_metric_key(pid, fun)
     mevent = Metric.partial(ts)
     summary_partials = Map.put(metrics.summary_partials, mkey, mevent)
@@ -83,22 +84,27 @@ defmodule GenMetrics.GenServer.Manager do
     end
   end
 
-  defp do_open_stats_metric(metrics, pid, fun, ts) do
+  defp do_open_stats_metric(metrics, {pid, fun, ts}) do
     mkey = as_metric_key(pid, fun)
     mevent = Metric.start(ts)
     stats_partials = Map.put(metrics.stats_partials, mkey, mevent)
     %Manager{metrics | stats_partials: stats_partials}
   end
 
-  defp do_close_stats_metric(metrics, pid, fun, ts) do
+  defp do_close_stats_metric(cluster, metrics, {mod, pid, fun, ts}) do
     mkey = as_metric_key(pid, fun)
     if Map.has_key?(metrics.stats_partials, mkey) do
-      {partial, stats_partials} = Map.pop(metrics.stats_partials, mkey)
+      {partial, partials} = Map.pop(metrics.stats_partials, mkey)
       mevent = Metric.stop(partial, ts)
-      stats_paired =
-        Map.update(metrics.stats_paired, mkey, [mevent], & [mevent | &1])
-      %Manager{metrics | stats_partials: stats_partials,
-               stats_paired: stats_paired}
+      statsd_args = {mod, pid, fun, mevent, partials}
+      case cluster.opts[:statistics] do
+        :statsd  ->
+          push_metric_to_statsd(cluster, metrics, statsd_args)
+        :datadog ->
+          push_metric_to_datadog(cluster, metrics, statsd_args)
+        _        ->
+          push_metric_in_memory(cluster, metrics, mkey, mevent, partials)
+      end
     else
       metrics
     end
@@ -163,6 +169,23 @@ defmodule GenMetrics.GenServer.Manager do
     %Stats{callbacks: len, min: Math.min(data), max: Math.max(data),
            total: Math.sum(data), mean: Math.mean(data, len),
            stdev: Math.stdev(data, len), range: Math.range(data)}
+  end
+
+  defp push_metric_in_memory(_cluster, metrics, mkey, mevent, stats_partials) do
+    stats_paired =
+      Map.update(metrics.stats_paired, mkey, [mevent], & [mevent | &1])
+    %Manager{metrics | stats_partials: stats_partials,
+             stats_paired: stats_paired}
+  end
+
+  defp push_metric_to_statsd(cluster, metrics, {mod, pid, fun, mevent, partials}) do
+    StatsPush.statsd(cluster.name, mod, pid, fun, mevent)
+    %Manager{metrics | stats_partials: partials}
+  end
+
+  defp push_metric_to_datadog(cluster, metrics, {mod, pid, fun, mevent, partials}) do
+    StatsPush.datadog(cluster.name, mod, pid, fun, mevent)
+    %Manager{metrics | stats_partials: partials}
   end
 
   defp as_metric_key(pid, fun) do

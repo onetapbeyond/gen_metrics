@@ -7,6 +7,7 @@ defmodule GenMetrics.GenStage.Manager do
   alias GenMetrics.GenStage.Metric
   alias GenMetrics.Utils.Math
   alias GenMetrics.Utils.Runtime
+  alias GenMetrics.Utils.StatsPush
 
   @moduledoc false
 
@@ -23,22 +24,22 @@ defmodule GenMetrics.GenStage.Manager do
              stats_partials: metrics.stats_partials}
   end
 
-  def open_summary_metric(metrics, pid, module, demand, ts) do
-    metrics = register_pid_on_stage(metrics, module, pid)
-    do_open_summary_metric(metrics, pid, module, demand, ts)
+  def open_summary_metric(metrics, mod, pid, demand, ts) do
+    metrics = register_pid_on_stage(metrics, mod, pid)
+    do_open_summary_metric(metrics, mod, pid, demand, ts)
   end
 
-  def close_summary_metric(metrics, pid, events, ts) do
-    do_close_summary_metric(metrics, pid, events, ts)
+  def close_summary_metric(metrics, mod, pid, events, ts) do
+    do_close_summary_metric(metrics, mod, pid, events, ts)
   end
 
-  def open_stats_metric(metrics, pid, module, demand, ts) do
-    metrics = register_pid_on_stage(metrics, module, pid)
-    do_open_stats_metric(metrics, pid, demand, ts)
+  def open_stats_metric(metrics, {mod, pid, demand, ts}) do
+    metrics = register_pid_on_stage(metrics, mod, pid)
+    do_open_stats_metric(metrics, {mod, pid, demand, ts})
   end
 
-  def close_stats_metric(metrics, pid, events, ts) do
-    do_close_stats_metric(metrics, pid, events, ts)
+  def close_stats_metric(pipeline, metrics, {mod, pid, events, ts}) do
+    do_close_stats_metric(pipeline, metrics, {mod, pid, events, ts})
   end
 
   def as_window(metrics, gen_stats) do
@@ -62,13 +63,13 @@ defmodule GenMetrics.GenStage.Manager do
     %Manager{metrics | stages: stages}
   end
 
-  defp do_open_summary_metric(metrics, pid, _module, demand, ts) do
+  defp do_open_summary_metric(metrics, _mod, pid, demand, ts) do
     mdemand = Metric.demand(demand, ts)
     summary_partials = Map.put(metrics.summary_partials, pid, mdemand)
     %Manager{metrics | summary_partials: summary_partials}
   end
 
-  defp do_close_summary_metric(metrics, pid, events, ts) do
+  defp do_close_summary_metric(metrics, _mod, pid, events, ts) do
     if Map.has_key?(metrics.summary_partials, pid) do
       {partial, summary_partials} = Map.pop(metrics.summary_partials, pid)
       summary_paired =
@@ -80,20 +81,25 @@ defmodule GenMetrics.GenStage.Manager do
     end
   end
 
-  defp do_open_stats_metric(metrics, pid, demand, ts) do
+  defp do_open_stats_metric(metrics, {_mod, pid, demand, ts}) do
     mdemand = Metric.demand(demand, ts)
     stats_partials = Map.put(metrics.stats_partials, pid, mdemand)
     %Manager{metrics | stats_partials: stats_partials}
   end
 
-  defp do_close_stats_metric(metrics, pid, events, ts) do
+  defp do_close_stats_metric(pipeline, metrics, {mod, pid, events, ts}) do
     if Map.has_key?(metrics.stats_partials, pid) do
-      {partial, stats_partials} = Map.pop(metrics.stats_partials, pid)
+      {partial, partials} = Map.pop(metrics.stats_partials, pid)
       mevent = Metric.event(partial, events, ts)
-      stats_paired =
-        Map.update(metrics.stats_paired, pid, [mevent], & [mevent | &1])
-      %Manager{metrics | stats_partials: stats_partials,
-               stats_paired: stats_paired}
+      statsd_args = {mod, pid, mevent, partials}
+      case pipeline.opts[:statistics] do
+        :statsd  ->
+          push_metric_to_statsd(pipeline, metrics, statsd_args)
+        :datadog ->
+          push_metric_to_datadog(pipeline, metrics, statsd_args)
+        _        ->
+          push_metric_in_memory(pipeline, metrics, pid, mevent, partials)
+      end
     else
       metrics
     end
@@ -160,6 +166,23 @@ defmodule GenMetrics.GenStage.Manager do
     %Stats{callbacks: len, min: Math.min(data), max: Math.max(data),
            total: Math.sum(data), mean: Math.mean(data, len),
            stdev: Math.stdev(data, len), range: Math.range(data)}
+  end
+
+  defp push_metric_in_memory(_cluster, metrics, pid, mevent, stats_partials) do
+    stats_paired =
+      Map.update(metrics.stats_paired, pid, [mevent], & [mevent | &1])
+    %Manager{metrics | stats_partials: stats_partials,
+             stats_paired: stats_paired}
+  end
+
+  defp push_metric_to_statsd(pipeline, metrics, {mod, pid, mevent, partials}) do
+    StatsPush.statsd(pipeline.name, mod, pid, nil, mevent)
+    %Manager{metrics | stats_partials: partials}
+  end
+
+  defp push_metric_to_datadog(pipeline, metrics, {mod, pid, mevent, partials}) do
+    StatsPush.datadog(pipeline.name, mod, pid, nil, mevent)
+    %Manager{metrics | stats_partials: partials}
   end
 
 end
