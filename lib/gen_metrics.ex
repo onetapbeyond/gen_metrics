@@ -11,12 +11,13 @@ defmodule GenMetrics do
   GenMetrics data can be used to reveal insights into live application
   performance and identify patterns of behaviour within an application over
   time. Metrics data can be used to drive any number of operational systems,
-  including realtime dashboards, monitoring and alerting systems, and even
-  feed into more sophisticated runtime analytics solutions.
+  including realtime dashboards, monitoring and alerting systems.
 
-  Metrics are published by a dedicated GenMetrics reporting process. Any
-  application can subscribe to this process in order to aggregate, render,
-  persist, or generally handle metrics data.
+  By default, metrics are published by a dedicated GenMetrics reporting process.
+  Any application can subscribe to this process in order to aggregate, render,
+  persist, or generally handle metrics data. Metrics data can also be pushed
+  directly to a `statsd` agent which makes it possible to analyze, and visualize
+  the metrics within existing tools and services like `Graphana` and `Datadog`.
 
   The metrics data collected by this library includes both summary metrics and
   optional detailed statistical metrics. Summary metrics and statistical
@@ -111,7 +112,8 @@ defmodule GenMetrics do
   statistical metrics.
 
   Statistical metrics may be activated using the `statistics` option on
-  `GenMetrics.monitor_cluster/1` as shown here:
+  `GenMetrics.monitor_cluster/1`. GenMetrics `in-memory` metrics are activated
+  as shown here:
 
   ```
   alias GenMetrics.GenServer.Cluster
@@ -121,8 +123,25 @@ defmodule GenMetrics do
   GenMetrics.monitor_cluster(cluster)
   ```
 
-  The following are sample statistical metrics reported for a single window
-  interval on a GenServer process:
+  Redirecting statistical metrics to a `statsd` agent simply requires the
+  following `opts` configuration:
+
+  ```
+  opts: [statistics: :statsd]}
+  ```
+
+  Redirecting statistical metrics to the `Datadog` statsd-agent requires the
+  following `opts` configuration:
+
+  ```
+  opts: [statistics: :datadog]}
+  ```
+
+  Metrics directed to Datadog include tagging data which makes it very easy
+  to subset and query the metrics that you need to monitor.
+
+  The following are sample `in-memory` statistical metrics reported for a
+  single window interval on a GenServer process:
 
   ```
   # Server Name: Demo.Server, PID<0.176.0>
@@ -155,29 +174,35 @@ defmodule GenMetrics do
                               total: 13510}
   ```
 
-  All timings reported on statistical metrics are reported in
+  All timings reported on `in-memory` statistical metrics are reported in
   `microseconds (µs)`. For example, during this sample window interval, the
   `handle_cast/2` callback was executed `34500` times. The total time spent
   processing those callbacks was `141383 µs`. The `mean` time taken per
   callback was `4 µs` while the `standard deviation` around the mean was `31 µs`.
 
-  *Note:* Under heavy load the generation of statistical metrics can
+  *Note:* Under heavy load the generation of `in-memory` statistical metrics can
   become computationally expensive. It is therefore recommended that
-  statistical metrics be activated in production environments *judiciously*.
+  `in-memory` metrics be activated in production environments *judiciously*.
+  These concerns are negligible when redirecting statistical metrics to
+  `:statsd` or `:datadog` as custom sampling-rates may be configured.
+
 
   ### GenServer Reporting Metrics
 
-  Runtime metrics for servers in your cluster are published via a dedicated
-  reporting process. The reporting process is registered locally by the
-  GenMetrics library at startup. This process is registered under the name
-  `GenMetrics.GenServer.Reporter`.
+  Runtime `in-memory` metrics for servers in your cluster are published via
+  a dedicated reporting process. The reporting process is registered locally
+  by the GenMetrics library at startup. This process is registered under the
+  name `GenMetrics.GenServer.Reporter`.
 
   The reporting process is a `GenStage` producer that broadcasts metrics data.
   Any number of consumers can subscribe to this process in order to handle
   metrics data.
 
-  For example, a simple GenStage `:consumer` can initialize itself to receive
-  events from the reporting process as follows:
+  Note, if you are redirecting statistical metrics to `:statsd` or `:datadog`
+  there is no need to subscribe to this reporting process.
+
+  In order to subscribe, a simple GenStage `:consumer` can initialize itself
+  to receive events from the reporting process as follows:
 
   ```
   def init(:ok) do
@@ -308,7 +333,8 @@ defmodule GenMetrics do
   statistical metrics.
 
   Statistical metrics may be activated using the `statistics` option on
-  `GenMetrics.monitor_pipeline/1` as shown here:
+  `GenMetrics.monitor_pipeline/1`. GenMetrics `in-memory` metrics are activated
+  as shown here:
 
   ```
   alias GenMetrics.GenStage.Pipeline
@@ -318,8 +344,25 @@ defmodule GenMetrics do
   GenMetrics.monitor_pipeline(pipeline)
   ```
 
-  The following are sample statistical metrics reported for a single window
-  interval on a GenStage process:
+  Redirecting statistical metrics to a `statsd` agent simply requires the
+  following `opts` configuration:
+
+  ```
+  opts: [statistics: :statsd]}
+  ```
+
+  Redirecting statistical metrics to the `Datadog` statsd-agent requires the
+  following `opts` configuration:
+
+  ```
+  opts: [statistics: :datadog]}
+  ```
+
+  Metrics directed to Datadog include tagging data which makes it very easy
+  to subset and query the metrics that you need to monitor.
+
+  The following are sample `in-memory` statistical metrics reported for a
+  single window interval on a GenStage process:
 
   ```
   # Stage Name: Data.Producer, PID<0.195.0>
@@ -332,7 +375,6 @@ defmodule GenMetrics do
                              range: 0,
                              stdev: 0,
                              total: 4768000}
-
   # callback events
   %GenMetrics.GenStage.Stats{callbacks: 9536,
                              max: 500,
@@ -352,7 +394,7 @@ defmodule GenMetrics do
                              total: 403170}
   ```
 
-  All timings reported on statistical metrics are reported in
+  All timings reported on `in-memory` statistical metrics are reported in
   `microseconds (µs)`. For example, during this sample window interval, `9536`
   callbacks were handled by the `Data.Producer` stage. The total time spent
   processing those callbacks was `403170 µs`. The `mean` time taken per
@@ -363,23 +405,28 @@ defmodule GenMetrics do
   by the stage. This tells us that the stage was able to fully meet upstream
   demand during this specific sample window interval.
 
-  *Note:* Under heavy load the generation of statistical metrics can
+  *Note:* Under heavy load the generation of `in-memory` statistical metrics can
   become computationally expensive. It is therefore recommended that
-  statistical metrics be activated in production environments *judiciously*.
+  `in-memory` metrics be activated in production environments *judiciously*.
+  These concerns are negligible when redirecting statistical metrics to
+  `:statsd` or `:datadog` as custom sampling-rates may be configured.
 
   ### GenMetrics Reporting Metrics
 
-  Runtime metrics for stages in your pipeline are published via a dedicated
-  reporting process. The reporting process is registered locally by the
-  GenMetrics library at startup. This process is registered under the name
-  `GenMetrics.GenStage.Reporter`.
+  Runtime `in-memory` metrics for stages in your pipeline are published
+  via a dedicated reporting process. The reporting process is registered
+  locally by the GenMetrics library at startup. This process is registered
+  under the name `GenMetrics.GenStage.Reporter`.
 
   The reporting process itself is a `GenStage` producer that broadcasts metrics
   data. Any number of consumers can subscribe to this process in order to handle
   metrics data.
 
-  For example, a simple GenStage `:consumer` can initialize itself to receive
-  events from the reporting process as follows:
+  Note, if you are redirecting statistical metrics to `:statsd` or `:datadog`
+  there is no need to subscribe to this reporting process.
+
+  In order to subscribe, a simple GenStage `:consumer` can initialize itself
+  to receive events from the reporting process as follows:
 
   ```
   def init(:ok) do
@@ -435,8 +482,28 @@ defmodule GenMetrics do
   1. All server modules specified on the cluster implement the GenServer
   behaviour
 
-  If every module in the cluster does not meet these conditions the
-  function terminates with a `:bad_cluster` response and related error messages.
+  If any module in the cluster does not meet these conditions the
+  function terminates with a `:bad_cluster` response and supporting error
+  messages.
+
+  ## Metrics Reporting
+
+  By default, metrics data gathered on your cluster are maintained `in-memory`
+  and reported by a dedicated reporting process. However, metrics data can
+  be redirected to `:statsd` or `:datadog` using the `statistics` configuration
+  option on this call.
+
+  For example: redirect your cluster metrics data to the `Datadog` service as
+  follows:
+
+  ```
+  alias GenMetrics.GenServer.Cluster
+  cluster = %Cluster{name: "demo",
+                     servers: [Session.Server, Logging.Server],
+                     opts: [statistics: :datadog]}
+  GenMetrics.monitor_cluster(cluster)
+  ```
+
   """
   @spec monitor_cluster(%Cluster{}) ::
   {:ok, pid} | {:error, :bad_server, [String.t]}
@@ -471,8 +538,30 @@ defmodule GenMetrics do
   1. All stage modules specified on the pipeline can be located and loaded
   1. All stage modules specified on the pipeline implement the GenStage behaviour
 
-  If every module in the pipeline does not meet these conditions the
-  function terminates with a `:bad_pipeline` response and related error messages.
+  If any module in the pipeline does not meet these conditions the
+  function terminates with a `:bad_pipeline` response and supporting error
+  messages.
+
+
+  ## Metrics Reporting
+
+  By default, metrics data gathered on your pipeline are maintained `in-memory`
+  and reported by a dedicated reporting process. However, metrics data can
+  be redirected to `:statsd` or `:datadog` using the `statistics` configuration
+  option on this call.
+
+  For example: redirect your pipeline metrics data to a `statsd` agent as
+  follows:
+
+  ```
+  alias GenMetrics.GenStage.Pipeline
+  pipeline = %Pipeline{name: "demo",
+                       producer: [Data.Producer],
+                       producer_consumer: [Data.Scrubber, Data.Analyzer],
+                       consumer: [Data.Consumer],
+                       opts: [statistics: :statsd]}
+  GenMetrics.monitor_pipeline(pipeline)
+  ```
   """
   @spec monitor_pipeline(%Pipeline{}) ::
   {:ok, pid} | {:error, :bad_pipeline, [String.t]}
