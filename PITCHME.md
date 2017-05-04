@@ -26,7 +26,7 @@ by introspection.
 
 ```elixir
 def deps do
-  [{:gen_metrics, "~> 0.1.0"}]
+  [{:gen_metrics, "~> 0.2.0"}]
 end
 ```
 
@@ -141,6 +141,48 @@ and calculated. Recommend judicious use.
 
 #### GenServer Statistical Metrics
 
+#### Sample Metrics Data
+
+```elixir
+# Server Name: Demo.Server, PID<0.176.0>
+
+# handle_cast/2
+%GenMetrics.GenServer.Stats{callbacks: 34500,
+                            max: 3368,
+                            mean: 4,
+                            min: 2,
+                            range: 3366,
+                            stdev: 31,
+                            total: 141383}
+
+# Statistical timings measured in microseconds (µs).
+```
+
++++
+
+#### GenServer Statistical Metrics
+
+#### Sample Metrics Data
+
+```elixir
+# Server Name: Demo.Server, PID<0.176.0>
+
+# handle_info/2
+%GenMetrics.GenServer.Stats{callbacks: 3333,
+                            max: 37,
+                            mean: 4,
+                            min: 2,
+                            range: 35,
+                            stdev: 2,
+                            total: 13510}
+
+# Statistical timings measured in microseconds (µs).
+```
+
++++
+
+#### GenServer Statistical Metrics
+
 #### Optional Statsd Activation
 
 ```elixir
@@ -181,48 +223,6 @@ GenMetrics.monitor_cluster(cluster)
 Note:
 Mention `:datadog` tagging feature is automatically activated
 to support filtering on individual GenServer clusters.
-
-+++
-
-#### GenServer Statistical Metrics
-
-#### Sample Metrics Data
-
-```elixir
-# Server Name: Demo.Server, PID<0.176.0>
-
-# handle_cast/2
-%GenMetrics.GenServer.Stats{callbacks: 34500,
-                            max: 3368,
-                            mean: 4,
-                            min: 2,
-                            range: 3366,
-                            stdev: 31,
-                            total: 141383}
-
-# Statistical timings measured in microseconds (µs).
-```
-
-+++
-
-#### GenServer Statistical Metrics
-
-#### Sample Metrics Data
-
-```elixir
-# Server Name: Demo.Server, PID<0.176.0>
-
-# handle_info/2
-%GenMetrics.GenServer.Stats{callbacks: 3333,
-                            max: 37,
-                            mean: 4,
-                            min: 2,
-                            range: 35,
-                            stdev: 2,
-                            total: 13510}
-
-# Statistical timings measured in microseconds (µs).
-```
 
 ---
 
@@ -290,7 +290,7 @@ how they are reflected in the metrics data shown.
 
 #### GenStage Statistical Metrics
 
-#### Optional Activation
+#### Optional In-Memory Activation
 
 ```elixir
 alias GenMetrics.GenStage.Pipeline
@@ -312,7 +312,7 @@ Again mention availability of *window_interval* option.
 
 #### GenStage Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # Stage Name: Data.Producer, PID<0.195.0>
@@ -337,7 +337,7 @@ and *timings* as we will see on the following slides.
 
 #### GenStage Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # callback events
@@ -356,7 +356,7 @@ and *timings* as we will see on the following slides.
 
 #### GenStage Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # callback timings
@@ -440,6 +440,7 @@ Emphasize separation of metrics collection, reporting, and consumption.
 #### GenMetrics.GenServer.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
+<span style="color:gray">For In-Memory Metrics Data</span>
 
 Note:
 Clarify that the producer name is registered by GenMetrics.
@@ -492,6 +493,7 @@ DataDog, etc.
 #### GenMetrics.GenStage.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
+<span style="color:gray">For In-Memory Metrics Data</span>
 
 +++
 
