@@ -141,7 +141,7 @@ and calculated. Recommend judicious use.
 
 #### GenServer Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -162,7 +162,7 @@ and calculated. Recommend judicious use.
 
 #### GenServer Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
