@@ -199,8 +199,7 @@ GenMetrics.monitor_cluster(cluster)
 
 Note:
 Explain `:statsd` integration with analysis and visualization
-tools such as Grafana and Datadog. Also, support for configurable
-sampling rate.
+tools such as Grafana and Datadog.
 
 +++
 
@@ -223,6 +222,20 @@ GenMetrics.monitor_cluster(cluster)
 Note:
 Mention `:datadog` tagging feature is automatically activated
 to support filtering on individual GenServer clusters.
+
++++
+
+#### StatsD Sampling
+
+Metrics sampling supported as follows:
+
+
+```
+config :gen_metrics, sample_rate: 0.8
+```
+
+Note:
+Recommend reduction in sampling rate as load increases.
 
 ---
 
@@ -392,8 +405,7 @@ GenMetrics.monitor_pipeline(pipeline)
 
 Note:
 Explain `:statsd` integration with analysis and visualization
-tools such as Grafana and Datadog. Also, support for configurable
-sampling rate.
+tools such as Grafana and Datadog.
 
 +++
 
@@ -417,6 +429,20 @@ GenMetrics.monitor_pipeline(pipeline)
 Note:
 Mention `:datadog` tagging feature is automatically activated
 to support filtering on individual GenStage pipelines.
+
++++
+
+#### StatsD Sampling
+
+Metrics sampling supported as follows:
+
+
+```
+config :gen_metrics, sample_rate: 0.8
+```
+
+Note:
+Recommend reduction in sampling rate as load increases.
 
 ---
 
