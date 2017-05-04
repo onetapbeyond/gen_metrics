@@ -12,6 +12,7 @@ behaviours and realtime metrics collection and reporting by GenMetrics.
 
 - Summary Metrics
 - Plus optional Statistical Metrics
+- Delivered In-Memory, Or To STATSD Agent
 - For any GenServer or GenStage Application
 - Without requiring changes to existing code <!-- .element: class="fragment" -->
 
@@ -25,7 +26,7 @@ by introspection.
 
 ```elixir
 def deps do
-  [{:gen_metrics, "~> 0.1.0"}]
+  [{:gen_metrics, "~> 0.2.0"}]
 end
 ```
 
@@ -94,7 +95,7 @@ Provide example by explaining how *calls* and *time_on_calls* relate.
 
 #### GenServer Statistical Metrics
 
-#### Optional Activation
+#### Optional In-Memory Activation
 
 ```elixir
 alias GenMetrics.GenServer.Cluster
@@ -115,7 +116,7 @@ Mention additional *opts* such as *window_interval* and how it works.
 
 #### GenServer Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -133,14 +134,14 @@ Mention additional *opts* such as *window_interval* and how it works.
 ```
 
 Note:
-Briefly explain how statistical metrics are captured and calculated.
-Recommend judicious use.
+Briefly explain how `in-memory` statistical metrics are captured
+and calculated. Recommend judicious use.
 
 +++
 
 #### GenServer Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -161,7 +162,7 @@ Recommend judicious use.
 
 #### GenServer Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # Server Name: Demo.Server, PID<0.176.0>
@@ -177,6 +178,64 @@ Recommend judicious use.
 
 # Statistical timings measured in microseconds (µs).
 ```
+
++++
+
+#### GenServer Statistical Metrics
+
+#### Optional Statsd Activation
+
+```elixir
+alias GenMetrics.GenServer.Cluster
+
+cluster = %Cluster{name: "demo",
+                   servers: [Session.Server, Logging.Server],
+                   opts: [statistics: :statsd]}
+
+GenMetrics.monitor_cluster(cluster)
+
+# Here Session.Server and Logging.Server are example GenServers.
+```
+
+Note:
+Explain `:statsd` integration with analysis and visualization
+tools such as Grafana and Datadog.
+
++++
+
+#### GenServer Statistical Metrics
+
+#### Optional Datadog Activation
+
+```elixir
+alias GenMetrics.GenServer.Cluster
+
+cluster = %Cluster{name: "demo",
+                   servers: [Session.Server, Logging.Server],
+                   opts: [statistics: :datadog]}
+
+GenMetrics.monitor_cluster(cluster)
+
+# Here Session.Server and Logging.Server are example GenServers.
+```
+
+Note:
+Mention `:datadog` tagging feature is automatically activated
+to support filtering on individual GenServer clusters.
+
++++
+
+#### StatsD Sampling
+
+Metrics sampling supported as follows:
+
+
+```
+config :gen_metrics, sample_rate: 0.8
+```
+
+Note:
+Recommend reduction in sampling rate as load increases.
 
 ---
 
@@ -244,7 +303,7 @@ how they are reflected in the metrics data shown.
 
 #### GenStage Statistical Metrics
 
-#### Optional Activation
+#### Optional In-Memory Activation
 
 ```elixir
 alias GenMetrics.GenStage.Pipeline
@@ -266,7 +325,7 @@ Again mention availability of *window_interval* option.
 
 #### GenStage Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # Stage Name: Data.Producer, PID<0.195.0>
@@ -291,7 +350,7 @@ and *timings* as we will see on the following slides.
 
 #### GenStage Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # callback events
@@ -310,7 +369,7 @@ and *timings* as we will see on the following slides.
 
 #### GenStage Statistical Metrics
 
-#### Sample Metrics Data
+#### Sample In-Memory Metrics Data
 
 ```elixir
 # callback timings
@@ -325,12 +384,73 @@ and *timings* as we will see on the following slides.
 # Statistical timings measured in microseconds (µs).
 ```
 
++++
+
+#### GenStage Statistical Metrics
+
+#### Optional Statsd Activation
+
+```elixir
+alias GenMetrics.GenStage.Pipeline
+
+pipeline = %Pipeline{name: "demo",
+                     producer_consumer:
+                     [Data.Scrubber, Data.Analyzer],
+                     opts: [statistics: :statsd]}
+
+GenMetrics.monitor_pipeline(pipeline)
+
+# Here Data.Scrubber and Data.Analyzer are example GenStages.
+```
+
+Note:
+Explain `:statsd` integration with analysis and visualization
+tools such as Grafana and Datadog.
+
++++
+
+#### GenStage Statistical Metrics
+
+#### Optional Datadog Activation
+
+```elixir
+alias GenMetrics.GenStage.Pipeline
+
+pipeline = %Pipeline{name: "demo",
+                     producer_consumer:
+                     [Data.Scrubber, Data.Analyzer],
+                     opts: [statistics: :datadog]}
+
+GenMetrics.monitor_pipeline(pipeline)
+
+# Here Data.Scrubber and Data.Analyzer are example GenStages.
+```
+
+Note:
+Mention `:datadog` tagging feature is automatically activated
+to support filtering on individual GenStage pipelines.
+
++++
+
+#### StatsD Sampling
+
+Metrics sampling supported as follows:
+
+
+```
+config :gen_metrics, sample_rate: 0.8
+```
+
+Note:
+Recommend reduction in sampling rate as load increases.
+
 ---
 
 ### GenMetrics Reporting
 
 - Metrics are published periodically
 - By a dedicated reporting process
+- Or by a statsd agent
 - Any application can subscribe for metrics events
 - Then aggregate, render, persist, etc metrics data
 
@@ -346,6 +466,8 @@ Emphasize separation of metrics collection, reporting, and consumption.
 #### GenMetrics.GenServer.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
+
+<span style="color:gray">For In-Memory Metrics Data</span>
 
 Note:
 Clarify that the producer name is registered by GenMetrics.
@@ -398,6 +520,8 @@ DataDog, etc.
 #### GenMetrics.GenStage.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
+
+<span style="color:gray">For In-Memory Metrics Data</span>
 
 +++
 
