@@ -440,6 +440,7 @@ Emphasize separation of metrics collection, reporting, and consumption.
 #### GenMetrics.GenServer.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
+
 <span style="color:gray">For In-Memory Metrics Data</span>
 
 Note:
@@ -493,6 +494,7 @@ DataDog, etc.
 #### GenMetrics.GenStage.Reporter
 
 <span style="color:gray">A GenStage Broadcasting Producer</span>
+
 <span style="color:gray">For In-Memory Metrics Data</span>
 
 +++
