@@ -126,6 +126,44 @@ Examples using GenMetrics to collect and report runtime metrics for GenStage app
 
 All of these GenStage example applications are clones of the example applications provided in the [GenStage](http://github.com/elixir-lang/gen_stage) project repository.
 
+
+## Benchmarks
+
+Some of you may be curious about the performance impact `gen_metrics` has on the servers and pipelines it is observing, so we've put together a couple of benchmarks to compare the overhead of traced vs untraced servers and pipelines. You can tweak and run the benchmark yourself under `bench/bench.exs`, and simply run `mix bench` to execute them.
+
+The most recent run of the benchmark produced the following report. This benchmark was run on a 2016 Macbook Pro (2.5ghz i7, 16GB RAM, SSD):
+
+```
+Elixir 1.4.1
+Erlang 19.2
+Benchmark suite executing with the following configuration:
+warmup: 5.0s
+time: 30.0s
+parallel: 1
+inputs: none specified
+Estimated total run time: 140.0s
+
+Benchmarking traced pipeline...
+Benchmarking traced server (call)...
+Benchmarking untraced pipeline...
+Benchmarking untraced server (call)...
+
+Name                             ips        average  deviation         median
+untraced server (call)          0.30         3.33 s    ±12.65%         3.08 s
+traced server (call)           0.140         7.16 s     ±8.54%         7.31 s
+untraced pipeline             0.0722        13.84 s     ±8.75%        14.16 s
+traced pipeline               0.0428        23.37 s     ±1.27%        23.37 s
+
+Comparison:
+untraced server (call)          0.30
+traced server (call)           0.140 - 2.15x slower
+untraced pipeline             0.0722 - 4.16x slower
+traced pipeline               0.0428 - 7.02x slower
+```
+
+While the benchmark *is* a contrived scenario (pushing 1M large messages through a `GenServer`, then the same through a `GenStage` pipeline),
+it should reflect a general idea of what you can expect from a performance perspective.
+
 ## License
 
 See the [LICENSE](LICENSE) file for license rights and limitations (Apache License 2.0).
