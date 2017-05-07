@@ -86,7 +86,7 @@ On our test hardware, the `traced-server` test managed to push approximately 2.0
 
 The results indicate a significant runtime overhead introduced by the GenMetrics library. By default, synchronous calls are not monitored by the GenMetrics library. However, this benchmark activated monitoring for synchronous calls. As indicated by the results the test using the monitored server performed `2.19x slower`. We can directly attribute this slowdown to the runtime overhead introduced by the GenMetrics library.
 
-Keep in mind, on our test hardware the GenMetrics tracing agent monitored 2.0 million synchronous calls in 30 seconds. For our specific test hardward, this is a good example of what we described as `a high rate of synchronous calls` in the [GenMetrics Runtime Performance Summary](#genmetrics-runtime-performance-summary) section.
+Keep in mind, on our test hardware the GenMetrics tracing agent monitored 2.0 million synchronous calls in 30 seconds. For our specific test hardware, this is a good example of what we described as `a high rate of synchronous calls` in the [GenMetrics Runtime Performance Summary](#genmetrics-runtime-performance-summary) section.
 
 ### GenServer Benchmark 3. bench_cluster_flow.exs
 
