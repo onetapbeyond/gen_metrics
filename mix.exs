@@ -10,6 +10,7 @@ defmodule GenMetrics.Mixfile do
      description: description(),
      package: package(),
      deps: deps(),
+     aliases: aliases(),
      docs: [main: "GenMetrics", source_url: "https://github.com/onetapbeyond/gen_metrics"]]
   end
 
@@ -35,7 +36,16 @@ defmodule GenMetrics.Mixfile do
     [{:gen_stage, "~> 0.11"},
      {:statix, ">= 0.0.0"},
      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
-     {:credo, "~> 0.7", only: [:dev, :test]}]
+     {:credo, "~> 0.7", only: [:dev, :test]},
+     {:benchee, "~> 0.7", only: :dev}]
+  end
+
+  defp aliases do
+    [bench_cluster: "run ./bench/bench_cluster.exs",
+     bench_cluster_sync: "run ./bench/bench_cluster_sync.exs",
+     bench_cluster_flow: "run ./bench/bench_cluster_flow.exs",
+     bench_pipeline: "run ./bench/bench_pipeline.exs",
+     bench_pipeline_sync: "run ./bench/bench_pipeline_sync.exs"]
   end
 
   defp description do
