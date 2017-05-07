@@ -145,7 +145,7 @@ On our hardware, the a high rate of calls (67k calls/s) was sufficiently high to
 
 The answer is, it depends. It depends entirely on the nature of your applications architecture, on the nature of the messages passing to your server or through your pipeline, and on the hardware resources on which your application is running.
 
-The best way to find out what a `high-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, never in production environments.
+The best way to find out what a `safe-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, never in production environments.
 
 ## GenStage Benchmarks
 
