@@ -6,7 +6,7 @@ The following sections of this document introduce each of the available benchmar
 
 ## GenMetrics Runtime Performance Summary
 
-When GenMetrics is activated, varying degress of runtime overhead *may* be incurred by the application being monitored if the rate of GenServer or GenStage calls within the application is sufficiently high. So the obvious question becomes, what exactly do we mean by a sufficiently high rate of calls? The discussion of results for each of the following benchmark tests explores this topic in detail.
+When GenMetrics is activated, varying degress of runtime overhead *may* be incurred by the application being monitored if the rate of GenServer or GenStage calls within the application is sufficiently high. So the obvious next question becomes, what exactly do we mean by a sufficiently high rate of calls? The discussion of results for each of the following benchmark tests explores this topic in detail.
 
 ## GenMetrics + Synchronous Calls
 
