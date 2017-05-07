@@ -135,7 +135,7 @@ untraced-server [ call ]        0.0500 - 1.00x slower
 traced---server [ call ]        0.0499 - 1.00x slower
 ```
 
-All tests managed to push 1000 messages per second to their respective GenServer processes for the duration of the 30 second test window. The test results indicate that no perceivable runtime overhead was incurred by the server process being monitored by GenMetrics. This is true both for synchronous `GenServer.call/3` calls and asynchronous `GenServer.cast/2` and `Kernel.send/2` calls.
+All tests managed to push 1000 messages per second to their respective GenServer processes for the duration of the 30 second window. The test results indicate that no perceivable runtime overhead was incurred by the server process being monitored by GenMetrics. This is true both for synchronous `GenServer.call/3` calls and asynchronous `GenServer.cast/2` and `Kernel.send/2` calls.
 
 Combined with what we learned in the previous benchmark test we can now make the following generalization:
 
