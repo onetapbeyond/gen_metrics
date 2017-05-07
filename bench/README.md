@@ -21,7 +21,7 @@ This benchmark runs the following two tests:
 1. traced-server [ call ]
 2. untraced-server [ call ]
 
-On our test hardware, both tests attempt to push as many messages as possible to a GenServer process using the synchronous (blocking) `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `traced-server` test is being monitored by GenMetrics. The server process within the `untraced-server` test is not being monitored by GenMetrics.
+Both tests attempt to push as many messages as possible to a GenServer process using the synchronous (blocking) `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `traced-server` test is being monitored by GenMetrics. The server process within the `untraced-server` test is not being monitored by GenMetrics.
 
 ```
 Elixir 1.4.1
@@ -45,7 +45,7 @@ traced---server [ call ]          0.23
 untraced-server [ call ]          0.23 - 1.00x slower
 ```
 
-Both tests managed to push approximately 4.5 million messages to their respective GenServer processes within the 30 second test window. That's approximately 150k messages per second.
+On our test hardware, both tests managed to push approximately 4.5 million messages to their respective GenServer processes within the 30 second test window. That's approximately 150k messages per second.
 
 The results indicate that zero runtime overhead was introduced by the GenMetrics library. This is easily explained by the information provided in the [GenMetrics + Synchronous Calls](#genmetrics--synchronous-calls) section above. By default, synchronous calls are not monitored by the GenMetrics library. This benchmark ran using the default configuration. Therefore GenMetrics did no real work at runtime. And so imposed no runtime overhead as collaborated by the test results shown here.
 
