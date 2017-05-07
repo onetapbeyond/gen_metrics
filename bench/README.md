@@ -99,7 +99,7 @@ The result of the previous benchmark might suggest that you would never want to 
 2. untraced-server [ cast ]
 3. untraced-server [ info ]
 
-Unlike previous GenServer tests, these tests do not attempt to pass as many messages as possible to the GenServer processes. Instead, these tests simulate a steady flow of 1000 messages per second. These tests each run for approximately 30 seconds. The server process within the `traced-server` tests is being monitored by GenMetrics. The `synchronous: true` option has also been enabled for this process. The server process within the `untraced-server` tests is not being monitored by GenMetrics.
+Unlike previous GenServer tests, these tests do not attempt to flood the GenServer processes with as many messages as possible. Instead, these tests simulate a steady flow of 1000 messages per second. These tests each run for approximately 30 seconds. The server process within the `traced-server` tests is being monitored by GenMetrics. The `synchronous: true` option has also been enabled for this process. The server process within the `untraced-server` tests is not being monitored by GenMetrics.
 
 ```
 Elixir 1.4.1
