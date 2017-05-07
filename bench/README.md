@@ -137,11 +137,13 @@ All tests managed to push 1000 messages per second to their respective GenServer
 
 Combined with what we learned in the previous benchmark test we can now make the following generalization:
 
-> A high rate of calls (synchronous or asynchronous) per second (eg. 66k calls/s) is likely to have significant impact on the runtime performance of an application being monitored by GenMetrics. A moderate rate of calls (synchronous or asynchronous) per second (eg. 1k calls/s) is likely to have little or zero impact on the runtime performance of an application being monitored by GenMetrics.
+> A high rate of calls (synchronous or asynchronous) per second (eg. 66k calls/s) is likely to have significant impact on the runtime performance of an application being monitored by GenMetrics. A low or moderate rate of calls (synchronous or asynchronous) per second (eg. 10k calls/s) is likely to have little or zero impact on the runtime performance of an application being monitored by GenMetrics.
 
-At what exact call rate the impact of monitoring by GenMetrics becomes problematic is going to be entirely dependent on the nature of the message passing to your server or through your pipeline and on the hardware resources on which your application is running.
+So at what point will GenMetrics have a negative impact on the runtime performance of your application?
 
-We therefore recommend that you estimate the rate of calls that are likely to occur on your GenServer processes and then determine if activating GenMetrics monitoring is likely to have any detrimental runtime impact on your application. Of course they best way to find out what a `high-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, never in production environments.
+The answer is, it depends. It depends entirely on the nature of your applications architecture, on the nature of the messages passing to your server or through your pipeline, and on the hardware resources on which your application is running.
+
+The best way to find out what a `high-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, never in production environments.
 
 ## GenStage Benchmarks
 
