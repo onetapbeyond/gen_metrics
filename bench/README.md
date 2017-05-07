@@ -21,7 +21,7 @@ This benchmark runs the following two tests:
 1. traced-server [ call ]
 2. untraced-server [ call ]
 
-Both tests attempt to push as many messages as possible to a GenServer process using the synchronous (blocking) `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `traced-server` test is being monitored by GenMetrics. The server process within the `untraced-server` test is not being monitored by GenMetrics.
+On our test hardware, both tests attempt to push as many messages as possible to a GenServer process using the synchronous (blocking) `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `traced-server` test is being monitored by GenMetrics. The server process within the `untraced-server` test is not being monitored by GenMetrics.
 
 ```
 Elixir 1.4.1
@@ -80,11 +80,11 @@ untraced-server [ call ]          0.20
 traced---server [ call ]        0.0932 - 2.19x slower
 ```
 
-The `traced-server` test managed to push approximately 2.0 million messages to its GenServer processes within the 30 second test window. That's approximately 67k messages per second. The `untraced-server` test managed to push approximately 4.5 million messages to its process within the same window. That's approrximately 150k message per second.
+On our test hardware, the `traced-server` test managed to push approximately 2.0 million messages to its GenServer processes within the 30 second test window. That's approximately 67k messages per second. The `untraced-server` test managed to push approximately 4.5 million messages to its process within the same window. That's approrximately 150k message per second.
 
 The results indicate a significant runtime overhead introduced by the GenMetrics library. By default, synchronous calls are not monitored by the GenMetrics library. However, this benchmark activated monitoring for synchronous calls. As indicated by the results the test using the monitored server performed `2.19x slower`. We can directly attribute this slowdown to the runtime overhead introduced by the GenMetrics library.
 
-Keep in mind, the GenMetrics tracing agent monitored 2.0 million synchronous calls in 30 seconds. This is a good example of what we described above as `a high rate of synchronous calls` in the [GenMetrics + Synchronous Calls](#genmetrics--synchronous-calls) section.
+Keep in mind, on our test hardware the GenMetrics tracing agent monitored 2.0 million synchronous calls in 30 seconds. This is a good example of what we described above as `a high rate of synchronous calls` in the [GenMetrics + Synchronous Calls](#genmetrics--synchronous-calls) section.
 
 ### GenServer Benchmark 3. bench_cluster_flow.exs
 
