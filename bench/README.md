@@ -8,8 +8,6 @@ The following sections of this document introduce each of the available benchmar
 
 Before diving in to the benchmarks themselves it is essential that we highlight one key runtime behaviour related to the GenMetrics library. By default, GenMetrics does not monitor synchronous (blocking) calls on `GenServer` or `GenStage` applications. However, synchronous call monitoring can be activated, using the `synchronous: true` option.
 
-When activated, significant runtime costs _may_ be incurred by the application being monitored if the rate of synchronous calls is high. So what exactly do we mean by a high rate of synchronous calls? See the discussion of results for each of the following benchmark tests for details.
-
 ## GenServer Benchmarks
 
 The following set of benchmark are designed to test and measure the runtime impact of GenMetrics on a simple GenServer application. Benchmark specific context is provided in each case along with an analysis of the results.
