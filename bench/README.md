@@ -137,9 +137,9 @@ All tests managed to push 1000 messages per second to their respective GenServer
 
 Combined with what we learned in the previous benchmark test we can now state the following:
 
-> High numbers of synchronous calls per second (eg. 66k calls/s) are likely to have significant impact on the runtime performance of an application being monitored by GenMetrics. Moderate numbers of synchronous calls per second (eg. 1k calls/s) are likely to have zero impact on the runtime performance of an application being monitored by GenMetrics.
+> A high rate of synchronous calls per second (eg. 66k calls/s) is likely to have significant impact on the runtime performance of an application being monitored by GenMetrics. A moderate rate of synchronous calls per second (eg. 1k calls/s) is likely to have little or zero impact on the runtime performance of an application being monitored by GenMetrics.
 
-We therefore recommend that you estimate the rate of synchronous operations that are likely to occur on your GenServer processes and then determine if activating GenMetrics-with-synchronous-monitoring is likely to have any detrimental runtime impact on your application. Of course they best way to find out is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, never in production environments.
+We therefore recommend that you estimate the rate of synchronous calls that are likely to occur on your GenServer processes and then determine if activating GenMetrics-with-synchronous-monitoring is likely to have any detrimental runtime impact on your application. Of course they best way to find out what a `high-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, never in production environments.
 
 ## GenStage Benchmarks
 
