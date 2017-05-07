@@ -56,7 +56,7 @@ This benchmark runs the following two tests:
 1. traced-server [ call ]
 2. untraced-server [ call ]
 
-Both tests attempt to push as many messages as possible to a GenServer process using the synchronous (blocking) `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `traced-server` test is being monitored by GenMetrics. The `synchronous: true` option has also been enabled for this process. The server process within the `untraced-server` test is not being monitored by GenMetrics.
+Both tests attempt to push as many messages as possible to a GenServer process using the synchronous (blocking) `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `traced-server` test is being monitored by GenMetrics. The `synchronous: true` option has been enabled for this process. The server process within the `untraced-server` test is not being monitored by GenMetrics.
 
 ```
 Elixir 1.4.1
@@ -97,7 +97,7 @@ The result of the previous benchmark might suggest that you would never want to 
 2. untraced-server [ cast ]
 3. untraced-server [ info ]
 
-Unlike previous GenServer tests these test does not attempt to pass as many messages as possible to the GenServer processes. Instead, these tests simulate a steady flow of 1000 messages per second. These tests each run for approximately 30 seconds. The server process within the `traced-server` tests is being monitored by GenMetrics. The `synchronous: true` option has been enabled for this process. The server process within the `untraced-server` tests is not being monitored by GenMetrics.
+Unlike previous GenServer tests, these tests do not attempt to pass as many messages as possible to the GenServer processes. Instead, these tests simulate a steady flow of 1000 messages per second. These tests each run for approximately 30 seconds. The server process within the `traced-server` tests is being monitored by GenMetrics. The `synchronous: true` option has also been enabled for this process. The server process within the `untraced-server` tests is not being monitored by GenMetrics.
 
 ```
 Elixir 1.4.1
@@ -135,11 +135,11 @@ traced---server [ call ]        0.0499 - 1.00x slower
 
 All tests managed to push 1000 messages per second to their respective GenServer processes for the duration of the 30 second test window. The test results indicate that no perceivable runtime overhead was incurred by the server process being monitored by GenMetrics. This is true both for synchronous `GenServer.call/3` calls and asynchronous `GenServer.cast/2` and `Kernel.send/2` calls.
 
-Combined with what we learned in the previous benchmark test we can now state the following:
+Combined with what we learned in the previous benchmark test we can now make the following generalization:
 
-> A high rate of synchronous calls per second (eg. 66k calls/s) is likely to have significant impact on the runtime performance of an application being monitored by GenMetrics. A moderate rate of synchronous calls per second (eg. 1k calls/s) is likely to have little or zero impact on the runtime performance of an application being monitored by GenMetrics.
+> A high rate of calls (synchronous or asynchronous) per second (eg. 66k calls/s) is likely to have significant impact on the runtime performance of an application being monitored by GenMetrics. A moderate rate of calls (synchronous or asynchronous) per second (eg. 1k calls/s) is likely to have little or zero impact on the runtime performance of an application being monitored by GenMetrics.
 
-We therefore recommend that you estimate the rate of synchronous calls that are likely to occur on your GenServer processes and then determine if activating GenMetrics-with-synchronous-monitoring is likely to have any detrimental runtime impact on your application. Of course they best way to find out what a `high-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, never in production environments.
+We therefore recommend that you estimate the rate of calls that are likely to occur on your GenServer processes and then determine if activating GenMetrics monitoring is likely to have any detrimental runtime impact on your application. Of course they best way to find out what a `high-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, never in production environments.
 
 ## GenStage Benchmarks
 
