@@ -212,7 +212,7 @@ On our test hardware, all tests except `traced-pipeline [max_demand: 1]` managed
 
 The answer is simple as soon as you understand the difference between the `rate-of-throughput` and the `rate-of-calls` within a pipeline.
 
-To understand those different rates, lets compare the results for `untraced-pipeline [max_demand: 1000]` and `traced-pipeline [max_demand: 1000]`. The `max_demand` value indicated is in fact the default value for a GenStage pipeline. Notice how there is very low runtime overhead on the `traced-pipeline [max_demand: 1000]`, just `1.07 times` slower than the untraced pipeline. Considering the test pushed 67k messages-per-second this result indicates the GenMetrics runtime impact was neglible.
+To understand those different rates, lets compare the results for `untraced-pipeline [max_demand: 1000]` and `traced-pipeline [max_demand: 1000]`. The `max_demand` value indicated is in fact the default value for a GenStage pipeline. Notice how there is very low runtime overhead on the `traced-pipeline [max_demand: 1000]`, just `1.07 times` slower than the untraced pipeline. Considering the test pushed 67k messages-per-second this result indicates the GenMetrics runtime impact was almost negligible.
 
 Thanks to GenStage intelligently batching events to satisfy upstream demand the `rate-of-throughput` is high while the `rate-of-calls` to deliver that throughput is low. Specifically, in this test where `max_demand` was set to 1000, the rate-of-throughput was 67k messages-per-second while the rate-of-calls per stage in the pipeline was just 134 calls-per-second (67k / 500 = 134).
 
