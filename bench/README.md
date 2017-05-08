@@ -162,7 +162,7 @@ This benchmark runs the following tests:
 3. untraced-pipeline [ max_demand:    1 ]
 4. untraced-pipeline [ max_demand: 1000 ]
 
-Each test attempts to push as many messages as possible to through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. The server process within the untraced-server test are not being monitored by GenMetrics.
+Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. The server process within the untraced-server test are not being monitored by GenMetrics.
 
 ```
 Elixir 1.4.1
