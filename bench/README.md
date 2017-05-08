@@ -147,13 +147,22 @@ On our hardware, the a high rate of calls (67k calls/s) was sufficiently high to
 
 The answer is, it depends. It depends entirely on the nature of your applications architecture, on the nature of the messages passing to your server or through your pipeline, and on the hardware resources on which your application is deployed.
 
-The best way to find out what a `safe-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, never in production environments.
+The best way to find out what a `safe-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, and never in production environments.
 
 ## GenStage Benchmarks
 
 The following set of benchmark are designed to test and measure the runtime impact of `gen_metrics` on a simple GenStage pipeline application. Benchmark specific context is provided in each case along with an analytis of the results.
 
 ### GenStage Benchmark 1. bench_pipeline.exs
+
+This benchmark runs the following two tests:
+
+1. traced-pipeline [ max_demand:    1 ]
+2. traced-pipeline [ max_demand: 1000 ]
+3. untraced-pipeline [ max_demand:    1 ]
+4. untraced-pipeline [ max_demand: 1000 ]
+
+Each test attempts to push as many messages as possible to through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `traced-pipeline` test is being monitored by GenMetrics. The server process within the untraced-server test is not being monitored by GenMetrics.
 
 ```
 Elixir 1.4.1
@@ -183,6 +192,9 @@ traced---pipeline [max_demand: 1000]        0.0299 - 1.07x slower
 traced---pipeline [max_demand:    1]        0.0156 - 2.06x slower
 ```
 
+On our test hardware, all tests except `traced-pipeline [max_demand: 1]` managed to push approximately 2.0 million messages to their respective GenStage pipelines within the 30 second test window. That's approximately 67k messages per second. However, the `traced-pipeline [max_demand: 1]` test only managed to push approximately 1.0 million message through its GenStage pipeline. How can explain this difference?
+
+The answer is simple as soon as you understand the difference between the between the `rate-of-calls` and the `rate-of-throughput` within a pipeline. 
 
 ### GenStage Benchmark 2. bench_pipeline_sync.exs
 
