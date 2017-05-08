@@ -194,7 +194,7 @@ traced---pipeline [max_demand:    1]        0.0156 - 2.06x slower
 
 On our test hardware, all tests except `traced-pipeline [max_demand: 1]` managed to push approximately 2.0 million messages through their respective GenStage pipelines within the 30 second test window. That's approximately 67k messages-per-second. However, the `traced-pipeline [max_demand: 1]` test only managed to push approximately 1.0 million message through its GenStage pipeline. How can we explain this difference?
 
-The answer is simple as soon as you understand the difference between the between the `rate-of-throughput` and the `rate-of-calls` within a pipeline.
+The answer is simple as soon as you understand the difference between the `rate-of-throughput` and the `rate-of-calls` within a pipeline.
 
 To understand those different rates, lets compare the results for `untraced-pipeline [max_demand: 1000]` and `traced-pipeline [max_demand: 1000]`. The `max_demand` value indicated is in fact the default value for a GenStage pipeline. Notice how there is very low runtime overhead on the `traced-pipeline [max_demand: 1000]`, just `1.07 times` slower than the untraced pipeline. Considering the test pushed 67k messages-per-second this result indicates the GenMetrics runtime impact was neglible.
 
@@ -245,7 +245,9 @@ traced---pipeline [max_demand:    1]        0.0132 - 1.97x slower
 
 On our test hardware, the `untraced-pipeline` tests managed to push approximately 2.0 million messages through the GenServer pipeline within the 30 second test window. That's approximately 67k messages-per-second. The `traced-server [max_demand: 500]` test achieved slightly lower throughput numbers, reported as being `1.27x slower`. And the `traced-server [max_demand: 1]` test performed significantly slower, reported as `1.97x slower`. How can we explain these numbers?
 
-For these tests the `synchronous: true` option was activated. Therefore, the synchronous `GenStage.call/3` function was being monitored. As we were attempting to push approximately 2.0 millions messages through the pipeline, simply pushing those message into the producer in the pipeline significantly increased the `rate-of-calls` being monitored.
+Again, the answer is revealed by the differences in the `rate-of-calls` within the pipeline and how those differences impact on the `rate-of-throughput`.
+
+For the `traced-pipeline` tests the `synchronous: true` option was activated. Therefore, the `GenStage.call/3` function used to push each of the 2.0 million messages into the GenStage producer for the pipeline. This significantly increased the `rate-of-calls` being monitored by GenMetrics. The `traced-pipeline [max-demand: 1]` test also suffered from a high rate-of-calls within its pipeline for all of the reasons detailed in the previous benchmark.
 
 ## GenMetrics + BEAM Garbage Collection
 
