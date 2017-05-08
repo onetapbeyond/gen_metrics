@@ -47,7 +47,7 @@ traced---server [ call ]          0.23
 untraced-server [ call ]          0.23 - 1.00x slower
 ```
 
-On our test hardware, both tests managed to push approximately 4.5 million messages to their respective GenServer processes within the 30 second test window. That's approximately 150k messages per second.
+On our test hardware, both tests managed to push approximately 4.5 million messages to their respective GenServer processes within the 30 second test window. That's approximately 150k messages-per-second.
 
 The results indicate that zero runtime overhead was introduced by the GenMetrics library. This is easily explained by the information provided in the [GenMetrics + Synchronous Calls](#genmetrics--synchronous-calls) section above. By default, synchronous calls are not monitored by the GenMetrics library. This benchmark ran using the default configuration. Therefore GenMetrics did no real work at runtime. And so imposed no runtime overhead as collaborated by the test results shown here.
 
@@ -82,7 +82,7 @@ untraced-server [ call ]          0.20
 traced---server [ call ]        0.0932 - 2.19x slower
 ```
 
-On our test hardware, the `traced-server` test managed to push approximately 2.0 million messages to its GenServer processes within the 30 second test window. That's approximately 67k messages per second. The `untraced-server` test managed to push approximately 4.5 million messages to its process within the same window. That's approrximately 150k message per second.
+On our test hardware, the `traced-server` test managed to push approximately 2.0 million messages to its GenServer processes within the 30 second test window. That's approximately 67k messages-per-second. The `untraced-server` test managed to push approximately 4.5 million messages to its process within the same window. That's approrximately 150k message per second.
 
 The results indicate a significant runtime overhead introduced by the GenMetrics library. By default, synchronous calls are not monitored by the GenMetrics library. However, this benchmark activated monitoring for synchronous calls. As indicated by the results the test using the monitored server performed `2.19x slower`. We can directly attribute this slowdown to the runtime overhead introduced by the GenMetrics library.
 
@@ -99,7 +99,7 @@ The result of the previous benchmark might suggest that you would never want to 
 2. untraced-server [ cast ]
 3. untraced-server [ info ]
 
-Unlike previous GenServer tests, these tests do not attempt to flood the GenServer processes with as many messages as possible. Instead, these tests simulate a steady flow of 1000 messages per second. These tests each run for approximately 30 seconds. The server process within the `traced-server` tests is being monitored by GenMetrics. The `synchronous: true` option has also been enabled for this process. The server process within the `untraced-server` tests is not being monitored by GenMetrics.
+Unlike previous GenServer tests, these tests do not attempt to flood the GenServer processes with as many messages as possible. Instead, these tests simulate a steady flow of 1000 messages-per-second. These tests each run for approximately 30 seconds. The server process within the `traced-server` tests is being monitored by GenMetrics. The `synchronous: true` option has also been enabled for this process. The server process within the `untraced-server` tests is not being monitored by GenMetrics.
 
 ```
 Elixir 1.4.1
@@ -135,7 +135,7 @@ untraced-server [ call ]        0.0500 - 1.00x slower
 traced---server [ call ]        0.0499 - 1.00x slower
 ```
 
-All tests managed to push 1000 messages per second to their respective GenServer processes for the duration of the 30 second window. The test results indicate that no perceivable runtime overhead was incurred by the server process being monitored by GenMetrics. This is true both for synchronous `GenServer.call/3` calls and asynchronous `GenServer.cast/2` and `Kernel.send/2` calls.
+All tests managed to push 1000 messages-per-second to their respective GenServer processes for the duration of the 30 second window. The test results indicate that no perceivable runtime overhead was incurred by the server process being monitored by GenMetrics. This is true both for synchronous `GenServer.call/3` calls and asynchronous `GenServer.cast/2` and `Kernel.send/2` calls.
 
 Combined with what we learned in the previous benchmark test we can now make the following generalization:
 
@@ -192,11 +192,11 @@ traced---pipeline [max_demand: 1000]        0.0299 - 1.07x slower
 traced---pipeline [max_demand:    1]        0.0156 - 2.06x slower
 ```
 
-On our test hardware, all tests except `traced-pipeline [max_demand: 1]` managed to push approximately 2.0 million messages to their respective GenStage pipelines within the 30 second test window. That's approximately 67k messages per second. However, the `traced-pipeline [max_demand: 1]` test only managed to push approximately 1.0 million message through its GenStage pipeline. How can explain this difference?
+On our test hardware, all tests except `traced-pipeline [max_demand: 1]` managed to push approximately 2.0 million messages to their respective GenStage pipelines within the 30 second test window. That's approximately 67k messages-per-second. However, the `traced-pipeline [max_demand: 1]` test only managed to push approximately 1.0 million message through its GenStage pipeline. How can explain this difference?
 
 The answer is simple as soon as you understand the difference between the between the `rate-of-calls` and the `rate-of-throughput` within a pipeline.
 
-First lets compare the results for `untraced-pipeline [max_demand: 1000]` and `traced-pipeline [max_demand: 1000]`. The `max_demand` value indicated is in fact the default value for a GenStage pipeline. Notice how there is very low runtime overhead on the `traced-pipeline [max_demand: 1000]`, just `1.07 times` slower than the untraced pipeline. Considering the test pushed 67k messages per second this result indicates the GenMetrics runtime impact was neglible. Thanks to GenStage intelligently batching events to satisfy upstream demand the `rate-of-throughput` is high while the `rate-of-calls` to deliver that throughput is low. Specifically, in this test where `max_demand` was 1000, the rate-of-throughput was 67k messages per second while the rate-of-calls was just 134 calls per second.
+First lets compare the results for `untraced-pipeline [max_demand: 1000]` and `traced-pipeline [max_demand: 1000]`. The `max_demand` value indicated is in fact the default value for a GenStage pipeline. Notice how there is very low runtime overhead on the `traced-pipeline [max_demand: 1000]`, just `1.07 times` slower than the untraced pipeline. Considering the test pushed 67k messages-per-second this result indicates the GenMetrics runtime impact was neglible. Thanks to GenStage intelligently batching events to satisfy upstream demand the `rate-of-throughput` is high while the `rate-of-calls` to deliver that throughput is low. Specifically, in this test where `max_demand` was set of 1000, the rate-of-throughput was 67k messages-per-second while the rate-of-calls per stage in the pipeline was just 134 calls-per-second.
 
 Now lets compare the results for the `untraced-pipeline [max_demand: 1]` and `traced_pipeline [max_demand: 1]` tests. In this case we see a significant impact on runtime performance, reported at approximately `2.06x slower`.
 
