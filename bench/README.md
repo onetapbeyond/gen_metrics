@@ -18,14 +18,14 @@ The following set of benchmark are designed to test and measure the runtime impa
 
 ### GenServer Benchmark 1. bench_cluster.exs
 
+```
+mix bench/bench_cluster
+```
+
 This benchmark runs the following two tests:
 
 1. traced-server [ call ]
 2. untraced-server [ call ]
-
-```
-mix bench/bench_cluster
-```
 
 Both tests attempt to push as many messages as possible to a GenServer process using the synchronous (blocking) `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `traced-server` test is being monitored by GenMetrics. The server process within the `untraced-server` test is not being monitored by GenMetrics.
 
@@ -98,6 +98,10 @@ Keep in mind, on our test hardware the GenMetrics tracing agent monitored 2.0 mi
 
 ### GenServer Benchmark 3. bench_cluster_flow.exs
 
+```
+mix bench/bench_cluster_flow
+```
+
 The result of the previous benchmark might suggest that you would never want to activate monitoring for synchronous calls. But is that really true? This benchmark attempts to help answer that question by running the following tests:
 
 1. traced-server [ call ]
@@ -163,6 +167,10 @@ The following set of benchmark are designed to test and measure the runtime impa
 
 ### GenStage Benchmark 1. bench_pipeline.exs
 
+```
+mix bench/bench_pipeline
+```
+
 This benchmark runs the following tests:
 
 1. traced-pipeline [ max_demand:    1 ]
@@ -212,6 +220,10 @@ Now lets compare the results for the `untraced-pipeline [max_demand: 1]` and `tr
 
 
 ### GenStage Benchmark 2. bench_pipeline_sync.exs
+
+```
+mix bench/bench_pipeline_sync
+```
 
 This benchmark runs the following tests:
 
