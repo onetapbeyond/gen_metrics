@@ -153,7 +153,7 @@ Combined with what we learned in the previous benchmark test we can now make the
 
 > GenMetrics can safely monitor a GenServer process when the rate-of-callbacks on that process is low or moderate. However, above a certain rate-of-callbacks, the runtime overhead of GenMetrics will impact negatively on your application's performance.
 
-On our test hardware, 67k callbacks-per-second was sufficiently high to see significant runtime impact. While just 1k callbacks-per-second was so low that zero runtime impact was observed regardless of whether we were monitoring synchronous or asynchronous calls.
+On our test hardware, 67k callbacks-per-second was sufficiently high to see significant runtime impact. While just 1k callbacks-per-second was so low that zero runtime impact was observed regardless of whether we were monitoring synchronous or asynchronous calls. Somewhere between 1k and 67k callbacks-per-second is a point where we need to start asking ourselves whether enabling GenMetrics is worth the runtime overhead.
 
 #### So at what point will GenMetrics have a negative impact on the runtime performance of your application?
 
@@ -216,7 +216,7 @@ To understand those different rates, lets compare the results for `untraced-pipe
 
 Thanks to GenStage intelligently batching events to satisfy upstream demand the `rate-of-throughput` for events is high while the `rate-of-callbacks` to deliver that throughput is low. Specifically, in this test where `max_demand` was set to 1000, the rate-of-throughput was 67k messages-per-second while the rate-of-callbacks-per-stage in the pipeline was just 134 callbacks-per-second-per-stage (67k / 500 = 134).
 
-Now lets compare the results for the `untraced-pipeline [max_demand: 1]` and `traced_pipeline [max_demand: 1]` tests. In this case we see a significant impact on runtime performance, reported as approximately `2.06x slower`. In these tests because `max_demand` was constrained, GenStage could not perform any batching of events to statisfy upstream demand. Instead, every individual message was sent upstream one event at a time. So while the rate-of-throughput stayed the same for the `untraced-pipeline [max_demand: 1]`, the rate-of-callbacks increased from 134 callbacks-per-second to 67k callbacks-per-second-per-stage in the pipeline. It is this massive jump in the rate-of-callbacks that explains the significant slowdown in runtime performance of the `traced-pipeline [max_demand: 1]` test.
+Now lets compare the results for the `untraced-pipeline [max_demand: 1]` and `traced_pipeline [max_demand: 1]` tests. In this case we see a significant impact on runtime performance, reported as approximately `2.06x slower`. In these tests because `max_demand` was constrained, GenStage could not perform any batching of events to statisfy upstream demand. Instead, every individual message was sent upstream one event at a time. So while the rate-of-throughput stayed the same for the `untraced-pipeline [max_demand: 1]`, the rate-of-callbacks increased from 134 callbacks-per-second-per-stage to 67k callbacks-per-second-per-stage in the pipeline. It is this massive jump in the rate-of-callbacks that explains the significant slowdown in runtime performance of the `traced-pipeline [max_demand: 1]` test.
 
 
 ### GenStage Benchmark 2. bench_pipeline_sync.exs
@@ -273,7 +273,7 @@ Combined with what we learned in the previous benchmark test we can now make the
 
 > GenMetrics can safely monitor a GenStage pipeline with a high rate-of-throughput as long as the rate-of-callbacks within that pipeline is low or moderate. However, above a certain rate-of-callbacks within the pipeline, the runtime overhead of GenMetrics will impact negatively on your application's performance.
 
-It is worth keeping in mind that in the case of a GenStage application, you do not always have to monitor every stage in the pipeline. Monitoring select stages within the pipeline is supported and in doing so you can reduce the overall rate-of-callbacks that need to be handled by GenMetrics.
+It is worth keeping in mind that in the case of a GenStage application, you do not always have to monitor every stage in the pipeline. Monitoring select stages within the pipeline is supported and in doing so you can reduce the overall rate-of-callbacks that need to be monitored by GenMetrics.
 
 When considering whether to enable GenMetrics monitoring on your pipeline a good rule of thumb is to consider the likely `rate-of-callbacks` that your pipeline will experience. The best way to find out what a `safe-rate-of-callbacks` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, and never in production environments.
 
