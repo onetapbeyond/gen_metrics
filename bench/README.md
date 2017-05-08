@@ -6,11 +6,11 @@ The following sections introduce each of the available benchmark tests. We exami
 
 ## GenMetrics Runtime Performance Summary
 
-When GenMetrics is activated, varying degress of runtime overhead *may* be incurred by the application being monitored if the rate of GenServer or GenStage calls within the application is sufficiently high. So the obvious next question becomes, what exactly do we mean by a sufficiently high rate of calls? The discussion of results for each of the following benchmark tests explores this topic in detail.
+When GenMetrics is activated, varying degress of runtime overhead *may* be incurred by the application being monitored if the rate of GenServer or GenStage callbacks within the application is sufficiently high. So the obvious next question becomes, what exactly do we mean by a sufficiently high rate of callbacks? The discussion of results for each of the following benchmark tests explores this topic in detail.
 
-## GenMetrics + Synchronous Calls
+## GenMetrics + Synchronous Callbacks
 
-Before diving in to the benchmarks themselves it is important to highlight one key runtime behaviour related to the GenMetrics library. By default, GenMetrics does not monitor synchronous (blocking) calls on `GenServer` or `GenStage` applications. However, synchronous call monitoring can be activated, using the `synchronous: true` option.
+Before diving in to the benchmarks themselves it is important to highlight one key runtime behaviour related to the GenMetrics library. By default, GenMetrics does not monitor synchronous (blocking) callbacks on `GenServer` or `GenStage` applications. However, synchronous callback monitoring can be activated, using the `synchronous: true` option.
 
 ## GenServer Benchmarks
 
@@ -53,7 +53,7 @@ untraced-server [ call ]          0.23 - 1.00x slower
 
 On our test hardware, both tests managed to push approximately 4.5 million messages to their respective GenServer processes within the 30 second test window. That's approximately 150k messages-per-second.
 
-The results indicate that zero runtime overhead was introduced by the GenMetrics library. This is easily explained by the information provided in the [GenMetrics + Synchronous Calls](#genmetrics--synchronous-calls) section above. By default, synchronous calls are not monitored by the GenMetrics library. This benchmark ran using the default configuration. Therefore GenMetrics had no real work to do at runtime. And so imposed no runtime overhead as collaborated by the test results shown here.
+The results indicate that zero runtime overhead was introduced by the GenMetrics library. This is easily explained by the information provided in the [GenMetrics + Synchronous Callbacks](#genmetrics--synchronous-callbacks) section above. By default, synchronous callbacks are not monitored by the GenMetrics library. This benchmark ran using the default configuration. Therefore GenMetrics had no real work to do at runtime. And so imposed no runtime overhead as collaborated by the test results shown here.
 
 ### GenServer Benchmark 2. bench_cluster_sync.exs
 
@@ -92,9 +92,9 @@ traced---server [ call ]        0.0932 - 2.19x slower
 
 On our test hardware, the `traced-server` test managed to push approximately 2.0 million messages to its GenServer process within the 30 second test window. That's approximately 67k messages-per-second. The `untraced-server` test managed to push approximately 4.5 million messages to its process within the same window. That's approrximately 150k message per second.
 
-The results indicate a significant runtime overhead introduced by the GenMetrics library. By default, synchronous calls are not monitored by the GenMetrics library. However, this benchmark activated monitoring for synchronous calls. As indicated by the results the test using the monitored server performed `2.19x slower`. We can directly attribute this slowdown to the runtime overhead introduced by the GenMetrics library.
+The results indicate a significant runtime overhead introduced by the GenMetrics library. By default, synchronous callbacks are not monitored by the GenMetrics library. However, this benchmark activated monitoring for synchronous callbacks. As indicated by the results the test using the monitored server performed `2.19x slower`. We can directly attribute this slowdown to the runtime overhead introduced by the GenMetrics library.
 
-Keep in mind, on our test hardware the GenMetrics tracing agent attempted to monitor 2.0 million synchronous calls in 30 seconds. For our specific test hardware, this is a good example of what we described as `a high rate of synchronous calls` in the [GenMetrics Runtime Performance Summary](#genmetrics-runtime-performance-summary) section.
+Keep in mind, on our test hardware the GenMetrics tracing agent attempted to monitor 2.0 million synchronous callbacks in 30 seconds. For our specific test hardware, this is a good example of what we described as `a high rate of synchronous callbacks` in the [GenMetrics Runtime Performance Summary](#genmetrics-runtime-performance-summary) section.
 
 ### GenServer Benchmark 3. bench_cluster_flow.exs
 
@@ -153,7 +153,7 @@ Combined with what we learned in the previous benchmark test we can now make the
 
 > GenMetrics can safely monitor a GenServer process when the rate-of-callbacks on that process is low or moderate. However, above a certain rate-of-callbacks, the runtime overhead of GenMetrics will impact negatively on your application's performance.
 
-On our test hardware, 67k calls-per-second was sufficiently high to see significant runtime impact. While just 1k calls-per-second was so low that zero runtime impact was observed regardless of whether we were monitoring synchronous or asynchronous calls.
+On our test hardware, 67k callbacks-per-second was sufficiently high to see significant runtime impact. While just 1k callbacks-per-second was so low that zero runtime impact was observed regardless of whether we were monitoring synchronous or asynchronous calls.
 
 #### So at what point will GenMetrics have a negative impact on the runtime performance of your application?
 
@@ -214,9 +214,9 @@ The answer is simple as soon as you understand the difference between the `rate-
 
 To understand those different rates, lets compare the results for `untraced-pipeline [max_demand: 1000]` and `traced-pipeline [max_demand: 1000]`. The `max_demand` value indicated is in fact the default value for a GenStage pipeline. Notice how there is very low runtime overhead on the `traced-pipeline [max_demand: 1000]`, just `1.07 times` slower than the untraced pipeline. Considering the test pushed 67k messages-per-second this result indicates the GenMetrics runtime impact was almost negligible.
 
-Thanks to GenStage intelligently batching events to satisfy upstream demand the `rate-of-throughput` for events is high while the `rate-of-callbacks` to deliver that throughput is low. Specifically, in this test where `max_demand` was set to 1000, the rate-of-throughput was 67k messages-per-second while the rate-of-callbacks-per-stage in the pipeline was just 134 calls-per-second-per-stage (67k / 500 = 134).
+Thanks to GenStage intelligently batching events to satisfy upstream demand the `rate-of-throughput` for events is high while the `rate-of-callbacks` to deliver that throughput is low. Specifically, in this test where `max_demand` was set to 1000, the rate-of-throughput was 67k messages-per-second while the rate-of-callbacks-per-stage in the pipeline was just 134 callbacks-per-second-per-stage (67k / 500 = 134).
 
-Now lets compare the results for the `untraced-pipeline [max_demand: 1]` and `traced_pipeline [max_demand: 1]` tests. In this case we see a significant impact on runtime performance, reported as approximately `2.06x slower`. In these tests because `max_demand` was constrained, GenStage could not perform any batching of events to statisfy upstream demand. Instead, every individual message was sent upstream one event at a time. So while the rate-of-throughput stayed the same for the `untraced-pipeline [max_demand: 1]`, the rate-of-callbacks increased from 134 calls-per-second to 67k calls-per-second-per-stage in the pipeline. It is this massive jump in the rate-of-callbacks that explains the significant slowdown in runtime performance of the `traced-pipeline [max_demand: 1]` test.
+Now lets compare the results for the `untraced-pipeline [max_demand: 1]` and `traced_pipeline [max_demand: 1]` tests. In this case we see a significant impact on runtime performance, reported as approximately `2.06x slower`. In these tests because `max_demand` was constrained, GenStage could not perform any batching of events to statisfy upstream demand. Instead, every individual message was sent upstream one event at a time. So while the rate-of-throughput stayed the same for the `untraced-pipeline [max_demand: 1]`, the rate-of-callbacks increased from 134 callbacks-per-second to 67k callbacks-per-second-per-stage in the pipeline. It is this massive jump in the rate-of-callbacks that explains the significant slowdown in runtime performance of the `traced-pipeline [max_demand: 1]` test.
 
 
 ### GenStage Benchmark 2. bench_pipeline_sync.exs
