@@ -162,7 +162,7 @@ This benchmark runs the following tests:
 3. untraced-pipeline [ max_demand:    1 ]
 4. untraced-pipeline [ max_demand: 1000 ]
 
-Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. The server process within the untraced-server test are not being monitored by GenMetrics.
+Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. The GenStage processes within the untraced-server test are not being monitored by GenMetrics.
 
 ```
 Elixir 1.4.1
@@ -205,6 +205,16 @@ Now lets compare the results for the `untraced-pipeline [max_demand: 1]` and `tr
 
 ### GenStage Benchmark 2. bench_pipeline_sync.exs
 
+This benchmark runs the following tests:
+
+1. traced-pipeline [ max_demand:    1 ]
+2. traced-pipeline [ max_demand: 1000 ]
+3. untraced-pipeline [ max_demand:    1 ]
+4. untraced-pipeline [ max_demand: 1000 ]
+
+Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. The `synchronous: true` option has been enabled for these process. The GenStage processes within the untraced-server test are not being monitored by GenMetrics.
+
+
 ```
 Elixir 1.4.1
 Erlang 19.2
@@ -232,6 +242,10 @@ untraced-pipeline [max_demand:    1]        0.0229 - 1.14x slower
 traced---pipeline [max_demand: 1000]        0.0204 - 1.27x slower
 traced---pipeline [max_demand:    1]        0.0132 - 1.97x slower
 ```
+
+On our test hardware, the `untraced-pipeline` tests managed to push approximately 2.0 million messages through the GenServer pipeline within the 30 second test window. That's approximately 67k messages-per-second. The `traced-server [max_demand: 500]` test achieved similar throughput numbers. However, the `traced-server [max_demand: 1]` test performed `1.97x slower`. How can we explain that?
+
+xxx
 
 ## GenMetrics + BEAM Garbage Collection
 
