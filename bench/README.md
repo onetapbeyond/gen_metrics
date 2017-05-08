@@ -192,7 +192,7 @@ traced---pipeline [max_demand: 1000]        0.0299 - 1.07x slower
 traced---pipeline [max_demand:    1]        0.0156 - 2.06x slower
 ```
 
-On our test hardware, all tests except `traced-pipeline [max_demand: 1]` managed to push approximately 2.0 million messages through their respective GenStage pipelines within the 30 second test window. That's approximately 67k messages-per-second. However, the `traced-pipeline [max_demand: 1]` test only managed to push approximately 1.0 million message through its GenStage pipeline. How can explain this difference?
+On our test hardware, all tests except `traced-pipeline [max_demand: 1]` managed to push approximately 2.0 million messages through their respective GenStage pipelines within the 30 second test window. That's approximately 67k messages-per-second. However, the `traced-pipeline [max_demand: 1]` test only managed to push approximately 1.0 million message through its GenStage pipeline. How can we explain this difference?
 
 The answer is simple as soon as you understand the difference between the between the `rate-of-calls` and the `rate-of-throughput` within a pipeline.
 
