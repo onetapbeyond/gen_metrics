@@ -53,7 +53,7 @@ untraced-server [ call ]          0.23 - 1.00x slower
 
 On our test hardware, both tests managed to push approximately 4.5 million messages to their respective GenServer processes within the 30 second test window. That's approximately 150k messages-per-second.
 
-The results indicate that zero runtime overhead was introduced by the GenMetrics library. This is easily explained by the information provided in the [GenMetrics + Synchronous Calls](#genmetrics--synchronous-calls) section above. By default, synchronous calls are not monitored by the GenMetrics library. This benchmark ran using the default configuration. Therefore GenMetrics did no real work at runtime. And so imposed no runtime overhead as collaborated by the test results shown here.
+The results indicate that zero runtime overhead was introduced by the GenMetrics library. This is easily explained by the information provided in the [GenMetrics + Synchronous Calls](#genmetrics--synchronous-calls) section above. By default, synchronous calls are not monitored by the GenMetrics library. This benchmark ran using the default configuration. Therefore GenMetrics had no real work to do at runtime. And so imposed no runtime overhead as collaborated by the test results shown here.
 
 ### GenServer Benchmark 2. bench_cluster_sync.exs
 
