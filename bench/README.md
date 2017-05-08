@@ -102,7 +102,7 @@ Keep in mind, on our test hardware the GenMetrics tracing agent attempted to mon
 mix bench/bench_cluster_flow
 ```
 
-The result of the previous benchmark might suggest that you would never want to activate GenMetrics monitoring at all. But is that really true? This benchmark attempts to help answer that question by running the following tests:
+The result of the previous benchmark might suggest that you would never want to activate GenMetrics monitoring at all. But is this really true? This benchmark attempts to help answer that question by running the following tests:
 
 1. traced-server [ call ]
 2. traced-server [ cast ]
