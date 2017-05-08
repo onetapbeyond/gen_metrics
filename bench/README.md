@@ -157,7 +157,7 @@ On our test hardware, 67k calls-per-second was sufficiently high to see signific
 
 #### So at what point will GenMetrics have a negative impact on the runtime performance of your application?
 
-The answer is, it depends. It depends entirely on the nature of your applications architecture, on the nature of the messages passing to your server or through your pipeline, and on the hardware resources on which your application is deployed.
+The answer is, it depends. Primarily it depends on the `rate-of-calls` being handled by your application and, like any application, on the hardware on which your application is deployed.
 
 The best way to find out what a `safe-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, and never in production environments.
 
