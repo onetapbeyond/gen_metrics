@@ -251,8 +251,9 @@ For the `traced-pipeline` tests the `synchronous: true` option was activated. Th
 
 ## GenMetrics + BEAM Garbage Collection
 
-By default, summary metrics, no problem
+By default, when GenMetrics is enabled is collects and report only summary metrics data. This type of metrics data collection has very little runtime overhead in terms of memory usage and should never trigger memory spikes and/or frequent runs of the GC.
 
-If detailed statistical metrics are enabled, equivlanet to activating a `statsd agent` directly within the BEAM. Therefore each metrics `window` in time this agent collects metrics data, the amount of which is directly propertional to the number of calls being monitored within your cluster or pipeline. Put another way, the size of the aggregated data can be very significant. And while the data is discared everytime a new `window` begins these spikes in data usage can and likely will cause the BEAM GC to run frequently in order to reclaim the unused space. 
+If detailed statistical metrics are activated using the `statistics: true` option, significant amounts of metrics data are collected. Activating this feature is a lot like activating a `statsd agent` directly within the BEAM. The exact amount of data collected is directly proportional to the `rate-of-calls` discussed above. It is therefore strongly recommended that this feature only be enabled in environments where the `rate-of-calls` is low. Otherwise, spiked memory usage and frequent GC will occur.
 
-So this is why `gen_metrics` has added support for pushing metrics data directly to a real `statsd agent` using the statistics: :statsd or statistics: :datadog options. When used, `gen_metrics` maintains only summary metrics data in-memory and the GC issue describe above is no longer triggered.
+If the type of insights provided by statistical metrics are needed then we strongly recommend using the existing support for redirecting metrics data to an external `statsd` agent. This can be achieved using the `statistics: :statsd` and `statistics: :datadog` options. Just remember to adjust the `sample_rate` for these agents so you do not overwhelm their ability to collect and report metrics.
+
