@@ -265,7 +265,7 @@ traced---pipeline [max_demand:    1]        0.0132 - 1.97x slower
 
 On our test hardware, the `untraced-pipeline` tests managed to push approximately 2.0 million messages through the GenServer pipeline within the 30 second test window. That's approximately 67k messages-per-second. The `traced-server [max_demand: 500]` test achieved slightly lower throughput numbers, reported as being `1.27x slower`. And the `traced-server [max_demand: 1]` test performed significantly slower, reported as `1.97x slower`. How can we explain these numbers?
 
-Again, the answer is revealed by the differences in the `rate-of-calls` within the pipeline and how those differences impact on the `rate-of-throughput`.
+Again, the answer is revealed by the differences in the `rate-of-calls` within the pipeline and how those differences impact on GenMetrics runtime overhead, which in turn impacts on the `rate-of-throughput`.
 
 For the `traced-pipeline` tests the `synchronous: true` option was activated. Therefore, the `GenStage.call/3` function used to push each of the 2.0 million messages into the GenStage producer for the pipeline were monitored. This significantly increased the `rate-of-calls` being monitored by GenMetrics. The `traced-pipeline [max-demand: 1]` test also suffered from a high rate-of-calls within its pipeline for all of the reasons detailed in the previous benchmark.
 
