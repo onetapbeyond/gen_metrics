@@ -267,7 +267,7 @@ On our test hardware, the `untraced-pipeline` tests managed to push approximatel
 
 Again, the answer is revealed by the differences in the `rate-of-calls` within the pipeline and how those differences impact on GenMetrics runtime overhead, which in turn impacts on the `rate-of-throughput`.
 
-For the `traced-pipeline` tests the `synchronous: true` option was activated. Therefore, the `GenStage.call/3` function used to push each of the 2.0 million messages into the GenStage producer for the pipeline were monitored. This significantly increased the `rate-of-calls` being monitored by GenMetrics. The `traced-pipeline [max-demand: 1]` test also suffered from a high rate-of-calls within its pipeline for all of the reasons detailed in the previous benchmark.
+For the `traced-pipeline` tests the `synchronous: true` option was activated. Therefore, the `GenStage.call/3` function used to push each of the 2.0 million messages into the GenStage producer for the pipeline was monitored. This significantly increased the `rate-of-calls` being monitored by GenMetrics. The `traced-pipeline [max-demand: 1]` test also suffered from a high rate-of-calls within its pipeline for all of the reasons detailed in the previous benchmark.
 
 When considering whether to enabled GenMetrics monitoring on your pipeline a good rule of thumb is to consider the likely `rate-of-calls` that your pipeline will experience. The best way to find out what a `safe-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, and never in production environments.
 
