@@ -151,7 +151,7 @@ All tests managed to push 1000 messages-per-second to their respective GenServer
 
 Combined with what we learned in the previous benchmark test we can now make the following generalization:
 
-> GenMetrics can safely monitor a GenServer process when the rate-of-calls on that process is low or moderate. Above a certain rate-of-calls, the runtime overhead of GenMetrics will impact negatively on your application's performance.
+> GenMetrics can safely monitor a GenServer process when the rate-of-calls on that process is low or moderate. However, above a certain rate-of-calls, the runtime overhead of GenMetrics will impact negatively on your application's performance.
 
 On our test hardware, 67k calls-per-second was sufficiently high to see significant runtime impact. While just 1k calls-per-second was so low that zero runtime impact was observed regardless of whether we were monitoring synchronous or asynchronous calls.
 
