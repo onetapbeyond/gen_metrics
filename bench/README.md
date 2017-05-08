@@ -243,9 +243,9 @@ traced---pipeline [max_demand: 1000]        0.0204 - 1.27x slower
 traced---pipeline [max_demand:    1]        0.0132 - 1.97x slower
 ```
 
-On our test hardware, the `untraced-pipeline` tests managed to push approximately 2.0 million messages through the GenServer pipeline within the 30 second test window. That's approximately 67k messages-per-second. The `traced-server [max_demand: 500]` test achieved similar throughput numbers. However, the `traced-server [max_demand: 1]` test performed `1.97x slower`. How can we explain that?
+On our test hardware, the `untraced-pipeline` tests managed to push approximately 2.0 million messages through the GenServer pipeline within the 30 second test window. That's approximately 67k messages-per-second. The `traced-server [max_demand: 500]` test achieved slightly lower throughput numbers, reported as being `1.27x slower`. And the `traced-server [max_demand: 1]` test performed significantly slower, reported as `1.97x slower`. How can we explain these numbers?
 
-xxx
+For these tests the `synchronous: true` option was activated. Therefore, the synchronous `GenStage.call/3` function was being monitored. As we were attempting to push approximately 2.0 millions messages through the pipeline, simply pushing those message into the producer in the pipeline significantly increased the `rate-of-calls` being monitored.
 
 ## GenMetrics + BEAM Garbage Collection
 
