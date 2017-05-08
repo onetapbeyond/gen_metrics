@@ -273,7 +273,7 @@ For the `traced-pipeline` tests the `synchronous: true` option was activated. Th
 
 By default, when GenMetrics is enabled is collects and report only summary metrics data. This type of metrics data collection has very little runtime overhead in terms of memory usage and should never trigger spikes in memory usage or GC.
 
-If detailed statistical metrics are activated using the `statistics: true` option, significant amounts of metrics data are collected. Activating this feature is a lot like activating a `statsd agent` directly within the BEAM. The exact amount of data collected is directly proportional to the `rate-of-calls` discussed above. It is therefore strongly recommended that this feature only be enabled in environments where the `rate-of-calls` is low. Otherwise, spiked memory usage and frequent GC will occur.
+If detailed statistical metrics are activated using the `statistics: true` option, significant amounts of metrics data are collected. Activating this feature is a lot like activating a `statsd agent` directly within the BEAM. The exact amount of data collected is directly proportional to the `rate-of-calls` discussed above. It is therefore strongly recommended that this feature only be enabled in environments where the `rate-of-calls` is known to be low. Otherwise, spiked memory usage and frequent GC will occur.
 
 If the type of insights provided by statistical metrics are needed then we strongly recommend using the existing support for redirecting metrics data to an external `statsd` agent. This can be achieved using the `statistics: :statsd` and `statistics: :datadog` options. Just remember to adjust the `sample_rate` for these agents so you do not overwhelm their ability to collect and report metrics.
 
