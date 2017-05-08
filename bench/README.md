@@ -14,7 +14,7 @@ Before diving in to the benchmarks themselves it is important to highlight one k
 
 ## GenServer Benchmarks
 
-The following set of benchmark are designed to test and measure the runtime impact of GenMetrics on a simple GenServer application. Benchmark specific context is provided in each case along with an analysis of the results.
+The following set of benchmarks are designed to test and measure the runtime impact of GenMetrics on a simple GenServer application. Benchmark specific context is provided in each case along with an analysis of the results.
 
 ### GenServer Benchmark 1. bench_cluster.exs
 
@@ -163,7 +163,7 @@ The best way to find out what a `safe-rate` means on your hardware is to enable 
 
 ## GenStage Benchmarks
 
-The following set of benchmark are designed to test and measure the runtime impact of `gen_metrics` on a simple GenStage pipeline application. Benchmark specific context is provided in each case along with an analytis of the results.
+The following set of benchmarks are designed to test and measure the runtime impact of `gen_metrics` on a simple GenStage pipeline application. Benchmark specific context is provided in each case along with an analytis of the results.
 
 ### GenStage Benchmark 1. bench_pipeline.exs
 
