@@ -271,7 +271,7 @@ For the `traced-pipeline` tests the `synchronous: true` option was activated. Th
 
 Combined with what we learned in the previous benchmark test we can now make the following generalization:
 
-> GenMetrics can safely monitor a GenStage pipeline with a high rate-of-throughput as long as the rate-of-calls within that pipeline is low or moderate. Above a certain rate-of-calls, the runtime overhead of GenMetrics will impact negatively on your application's performance.
+> GenMetrics can safely monitor a GenStage pipeline with a high rate-of-throughput as long as the rate-of-calls within that pipeline is low or moderate. However, above a certain rate-of-calls, the runtime overhead of GenMetrics will impact negatively on your application's performance.
 
 It is worth keeping in mind that in the case of a GenStage application, you do not always have to monitor every stage in the pipeline. Monitoring select stages within the pipeline is supported and in doing so you can reduce the overall rate-of-calls that need to be handled by GenMetrics.
 
