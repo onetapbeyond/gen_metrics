@@ -90,7 +90,7 @@ untraced-server [ call ]          0.20
 traced---server [ call ]        0.0932 - 2.19x slower
 ```
 
-On our test hardware, the `traced-server` test managed to push approximately 2.0 million messages to its GenServer processes within the 30 second test window. That's approximately 67k messages-per-second. The `untraced-server` test managed to push approximately 4.5 million messages to its process within the same window. That's approrximately 150k message per second.
+On our test hardware, the `traced-server` test managed to push approximately 2.0 million messages to its GenServer process within the 30 second test window. That's approximately 67k messages-per-second. The `untraced-server` test managed to push approximately 4.5 million messages to its process within the same window. That's approrximately 150k message per second.
 
 The results indicate a significant runtime overhead introduced by the GenMetrics library. By default, synchronous calls are not monitored by the GenMetrics library. However, this benchmark activated monitoring for synchronous calls. As indicated by the results the test using the monitored server performed `2.19x slower`. We can directly attribute this slowdown to the runtime overhead introduced by the GenMetrics library.
 
