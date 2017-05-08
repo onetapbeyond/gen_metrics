@@ -279,7 +279,7 @@ When considering whether to enable GenMetrics monitoring on your pipeline a good
 
 ## GenMetrics + BEAM Garbage Collection
 
-Some final remarks about GenMetrics and it's memory usage profile within BEAM.
+Some final remarks about GenMetrics and it's memory usage profile within the BEAM.
 
 By default, when GenMetrics is enabled is collects and report only summary metrics data. This type of metrics data collection has very little runtime overhead in terms of memory usage and should never trigger spikes in memory usage or GC.
 
