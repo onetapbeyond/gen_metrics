@@ -151,7 +151,7 @@ All tests managed to push 1000 messages-per-second to their respective GenServer
 
 Combined with what we learned in the previous benchmark test we can now make the following generalization:
 
-> GenMetrics can safely monitor a GenServer process when the rate-of-calls on that process is low or moderate.
+> GenMetrics can safely monitor a GenServer process when the rate-of-calls on that process is low or moderate. Above a certain rate-of-calls, the runtime overhead of GenMetrics will impact negatively on your application's performance.
 
 On our test hardware, 67k calls-per-second was sufficiently high to see significant runtime impact. While just 1k calls-per-second was so low that zero runtime impact was observed regardless of whether we were monitoring synchronous or asynchronous calls.
 
@@ -271,7 +271,9 @@ For the `traced-pipeline` tests the `synchronous: true` option was activated. Th
 
 Combined with what we learned in the previous benchmark test we can now make the following generalization:
 
-> GenMetrics can safely monitor a GenStage pipeline with a high rate-of-throughput as long as the rate-of-calls within that pipeline is low or moderate.
+> GenMetrics can safely monitor a GenStage pipeline with a high rate-of-throughput as long as the rate-of-calls within that pipeline is low or moderate. Above a certain rate-of-calls, the runtime overhead of GenMetrics will impact negatively on your application's performance.
+
+It is worth keeping in mind that in the case of a GenStage application, you do not always have to monitor every stage in the pipeline. Monitoring select stages within the pipeline is supported and in doing so you can reduce the overall rate-of-calls that need to be handled by GenMetrics.
 
 When considering whether to enabled GenMetrics monitoring on your pipeline a good rule of thumb is to consider the likely `rate-of-calls` that your pipeline will experience. The best way to find out what a `safe-rate` means on your hardware is to enable GenMetrics and experience actual runtime behaviour. We strongly recommend doing such experimentation in development or staging environments only, and never in production environments.
 
