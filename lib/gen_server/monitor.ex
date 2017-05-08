@@ -81,7 +81,7 @@ defmodule GenMetrics.GenServer.Monitor do
   def handle_info(:rollover_metrics_window, state) do
     now = :erlang.system_time
     state = %Monitor{state | duration: Runtime.nano_to_milli(now - state.start)}
-    window = Manager.as_window(state.metrics, statistics?(state))
+    window = Manager.as_window(state.metrics, statistics?(state.cluster))
     window = %Window{window | cluster: state.cluster,
                      start: state.start, duration: state.duration}
     Reporter.push(GenMetrics.GenServer.Reporter, window)
@@ -120,8 +120,11 @@ defmodule GenMetrics.GenServer.Monitor do
     :erlang.trace(:all, true, [:call, :monotonic_timestamp])
 
     for server <- cluster.servers do
-      :erlang.trace_pattern({server, :handle_call, 3},
-        [{:_, [], [{:return_trace}]}])
+
+      if synchronous?(cluster) do
+        :erlang.trace_pattern({server, :handle_call, 3},
+          [{:_, [], [{:return_trace}]}])
+      end
       :erlang.trace_pattern({server, :handle_cast, 2},
         [{:_, [], [{:return_trace}]}])
       :erlang.trace_pattern({server, :handle_info, 2},
@@ -179,7 +182,7 @@ defmodule GenMetrics.GenServer.Monitor do
       Manager.open_summary_metric(state.metrics, mod, pid, fun, ts)
     state = %Monitor{state | metrics: metrics}
 
-    if statistics?(state) do
+    if statistics?(state.cluster) do
       metrics =
         Manager.open_stats_metric(state.metrics, {mod, pid, fun, ts})
       %Monitor{state | metrics: metrics}
@@ -193,7 +196,7 @@ defmodule GenMetrics.GenServer.Monitor do
     metrics = Manager.close_summary_metric(state.metrics, pid, events, ts)
     state = %Monitor{state | metrics: metrics}
 
-    if statistics?(state) do
+    if statistics?(state.cluster) do
       metrics = Manager.close_stats_metric(state.cluster,
         state.metrics, {mod, pid, events, ts})
       %Monitor{state | metrics: metrics}
@@ -208,6 +211,9 @@ defmodule GenMetrics.GenServer.Monitor do
   end
 
   # Return true if monitor is required to generate optional statistics.
-  defp statistics?(state), do: state.cluster.opts[:statistics] || false
+  defp statistics?(cluster), do: cluster.opts[:statistics] || false
+
+  # Return true if monitor is required to trace synchronous calls.
+  defp synchronous?(cluster), do: cluster.opts[:synchronous] || false
 
 end

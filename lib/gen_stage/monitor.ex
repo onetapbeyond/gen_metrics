@@ -77,7 +77,7 @@ defmodule GenMetrics.GenStage.Monitor do
   def handle_info(:rollover_metrics_window, state) do
     now = :erlang.system_time
     state = %Monitor{state | duration: Runtime.nano_to_milli(now - state.start)}
-    window = Manager.as_window(state.metrics, statistics?(state))
+    window = Manager.as_window(state.metrics, statistics?(state.pipeline))
     window = %Window{window | pipeline: state.pipeline,
                      start: state.start, duration: state.duration}
     Reporter.push(GenMetrics.GenStage.Reporter, window)
@@ -118,19 +118,23 @@ defmodule GenMetrics.GenStage.Monitor do
     for pmod <- pipeline.producer do
       :erlang.trace_pattern({pmod, :handle_demand, 2},
         [{:_, [], [{:return_trace}]}])
-      :erlang.trace_pattern({pmod, :handle_call, 3},
-        [{:_, [], [{:return_trace}]}])
       :erlang.trace_pattern({pmod, :handle_cast, 2},
         [{:_, [], [{:return_trace}]}])
+      if synchronous?(pipeline) do
+        :erlang.trace_pattern({pmod, :handle_call, 3},
+          [{:_, [], [{:return_trace}]}])
+      end
     end
 
     for pcmod <- pipeline.producer_consumer do
       :erlang.trace_pattern({pcmod, :handle_events, 3},
         [{:_, [], [{:return_trace}]}])
-      :erlang.trace_pattern({pcmod, :handle_call, 3},
-        [{:_, [], [{:return_trace}]}])
       :erlang.trace_pattern({pcmod, :handle_cast, 2},
         [{:_, [], [{:return_trace}]}])
+      if synchronous?(pipeline) do
+        :erlang.trace_pattern({pcmod, :handle_call, 3},
+          [{:_, [], [{:return_trace}]}])
+      end
     end
 
     for cmod <- pipeline.consumer do
@@ -193,7 +197,7 @@ defmodule GenMetrics.GenStage.Monitor do
       Manager.open_summary_metric(state.metrics, mod, pid, demand, ts)
     state = %Monitor{state | metrics: metrics}
 
-    if statistics?(state) do
+    if statistics?(state.pipeline) do
       metrics =
         Manager.open_stats_metric(state.metrics, {mod, pid, demand, ts})
       %Monitor{state | metrics: metrics}
@@ -207,7 +211,7 @@ defmodule GenMetrics.GenStage.Monitor do
     metrics = Manager.close_summary_metric(state.metrics, mod, pid, events, ts)
     state = %Monitor{state | metrics: metrics}
 
-    if statistics?(state) do
+    if statistics?(state.pipeline) do
       metrics = Manager.close_stats_metric(state.pipeline,
         state.metrics, {mod, pid, events, ts})
       %Monitor{state | metrics: metrics}
@@ -222,6 +226,9 @@ defmodule GenMetrics.GenStage.Monitor do
   end
 
   # Return true if monitor is required to generate optional statistics.
-  defp statistics?(state), do: state.pipeline.opts[:statistics] || false
+  defp statistics?(pipeline), do: pipeline.opts[:statistics] || false
+
+  # Return true if monitor is required to trace synchronous calls.
+  defp synchronous?(pipeline), do: pipeline.opts[:synchronous] || false
 
 end
