@@ -151,7 +151,7 @@ All tests managed to push 1000 messages-per-second to their respective GenServer
 
 Combined with what we learned in the previous benchmark test we can now make the following generalization:
 
-> A genuinely high rate of calls (synchronous or asynchronous) per second is likely to have negative impact on the runtime performance of an application being monitored by GenMetrics. A low or moderate rate of calls (synchronous or asynchronous) per second is likely to have little or zero impact on the runtime performance of an application being monitored by GenMetrics.
+> GenMetrics can safely monitor a GenServer process when the rate-of-calls on that process is low or moderate.
 
 On our test hardware, 67k calls-per-second was sufficiently high to see significant runtime impact. While just 1k calls-per-second was so low that zero runtime impact was observed regardless of whether we were monitoring synchronous or asynchronous calls.
 
