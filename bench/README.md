@@ -22,7 +22,7 @@ The following set of benchmark are designed to test and measure the runtime impa
 mix bench/bench_cluster
 ```
 
-This benchmark runs the following two tests:
+This benchmark runs the following tests:
 
 1. traced-server [ call ]
 2. untraced-server [ call ]
@@ -61,7 +61,7 @@ The results indicate that zero runtime overhead was introduced by the GenMetrics
 mix bench/bench_cluster_sync
 ```
 
-This benchmark runs the following two tests:
+This benchmark runs the following tests:
 
 1. traced-server [ call ]
 2. untraced-server [ call ]
