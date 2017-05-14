@@ -6,7 +6,7 @@ The following sections introduce each of the available benchmark tests. We exami
 
 ## GenMetrics Runtime Performance Summary
 
-When GenMetrics is activated, varying degress of runtime overhead *may* be incurred by the application being monitored depending on the rate of GenServer or GenStage callbacks within the application. In order to prevent GenMetrics negatively impacting on your application it is strongly recommended that you activate *sampling* metrics for high-callback applications.
+When GenMetrics is activated, varying degress of runtime overhead *may* be incurred by the application being monitored depending on the rate of GenServer or GenStage callbacks within the application. In order to prevent GenMetrics negatively impacting on your application it is strongly recommended that you activate *metrics-sampling* for high-callback applications.
 
 To activate sampling metrics for your server or pipeline simply specify the `sample_rate` option when declaring your monitoring preferences. For example, to reduce the runtime overhead of GenMetrics by sampling just 10% of all callbacks within your server or pipeline simply specify `opts : [sample_rate: 0.1]`.
 
