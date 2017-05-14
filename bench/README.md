@@ -6,13 +6,13 @@ The following sections introduce each of the available benchmark tests. We exami
 
 ## GenMetrics Runtime Performance Summary
 
-When GenMetrics is activated, varying degress of runtime overhead *may* be incurred by the application being monitored depending on the rate of GenServer or GenStage callbacks within the application. In order to prevent GenMetrics negatively impacting on your application it is strongly recommended that you activate `sampling` metrics for high-volume applications.
+When GenMetrics is activated, varying degress of runtime overhead *may* be incurred by the application being monitored depending on the rate of GenServer or GenStage callbacks within the application. In order to prevent GenMetrics negatively impacting on your application it is strongly recommended that you activate `sampling` metrics for high-callback applications.
 
 To activate sampling metrics for your server or pipeline simply specify the `sample_rate` option when declaring your monitoring preferences. For example, to reduce the runtime overhead of GenMetrics by sampling just 10% of all callbacks within your server or pipeline simply specify `opts : [sample_rate: 0.1]`.
 
 It is important to understand that when sampling is disabled, metrics data reflect the exact behaviour of the processes being monitored. When sampling is enabled, metrics data reflect an approximation of the behaviour of the processes being monitored.
 
-Note, GenMetrics depends on Erlang tracing to collect runtime metrics for your application. One consequence of this depedency is that tail-call optimization is automatically disabled by the tracing agent. Given this, activating metrics sampling is *required* for high-volume applications or memory exhaustion due to unbounded stack growth is inevitable.
+Note, GenMetrics depends on Erlang tracing to collect runtime metrics for your application. One consequence of this depedency is that tail-call optimization is automatically disabled by the tracing agent. Given this, activating metrics sampling is *required* for high-callback applications or memory exhaustion due to unbounded stack growth is inevitable.
 
 ## GenMetrics + Synchronous / Asynchronous Callbacks
 
