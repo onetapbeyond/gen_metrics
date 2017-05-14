@@ -8,7 +8,7 @@ The following sections introduce each of the available benchmark tests. We exami
 
 When GenMetrics is activated, varying degress of runtime overhead *may* be incurred by the application being monitored depending on the rate of GenServer or GenStage callbacks within the application. In order to prevent GenMetrics negatively impacting on your application it is strongly recommended that you activate `sampling` metrics for high-volume applications.
 
-To activate sampling metrics for your cluster or pipeline simply specify the `sample_rate` option when declaring your monitoring preferences. For example, to reduce the runtime overhead of GenMetrics by sampling just 10% of all callbacks within your server or pipeline simply specify `opts : [sample_rate: 0.1]`.
+To activate sampling metrics for your server or pipeline simply specify the `sample_rate` option when declaring your monitoring preferences. For example, to reduce the runtime overhead of GenMetrics by sampling just 10% of all callbacks within your server or pipeline simply specify `opts : [sample_rate: 0.1]`.
 
 It is important to understand that when sampling is disabled, metrics data reflect the exact behaviour of the processes being monitored. When sampling is enabled, metrics data reflect an approximation of the behaviour of the processes being monitored.
 
@@ -16,16 +16,16 @@ Note, GenMetrics depends on Erlang tracing to collect runtime metrics for your a
 
 ## GenMetrics + Synchronous / Asynchronous Callbacks
 
-By default, GenMetrics monitors all synchronous and asynchronous callbacks within a server or pipeline. However, the monitoring of synchronous callbacks is optional. To disable monitoring of synchronous callbacks simply specify the `opts: [synchronous: false]` option when declaring the monitoring preferences for your cluster or pipeline.
+By default, GenMetrics monitors all synchronous and asynchronous callbacks within a server or pipeline. However, the monitoring of synchronous callbacks is optional. To disable monitoring of synchronous callbacks simply specify the `opts: [synchronous: false]` option when declaring the monitoring preferences for your server or pipeline.
 
 ## GenServer Benchmarks
 
 The following set of benchmarks are designed to test and measure the runtime impact of GenMetrics on a simple GenServer application. Benchmark specific context is provided in each case along with an analysis of the results.
 
-### GenServer Benchmark 1. bench/trace_cluster.exs
+### GenServer Benchmark 1. bench/trace_server.exs
 
 ```
-mix trace_cluster
+mix trace_server
 ```
 
 This benchmark runs the following tests:
@@ -65,10 +65,10 @@ The results indicate a significant runtime overhead has been introduced by the G
 While not all applications require metrics sampling to reduce the runtime overhead associated with GenMetrics, this result strongly suggests this test application is a good candidate for sampling. See the following benchmark to see the immediate and significant positive effects of activating sampling.
 
 
-### GenServer Benchmark 2. bench/sample_cluster.exs
+### GenServer Benchmark 2. bench/sample_server.exs
 
 ```
-mix sample_cluster
+mix sample_server
 ```
 
 This benchmark runs the following tests:
