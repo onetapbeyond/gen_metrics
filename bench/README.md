@@ -31,7 +31,7 @@ mix trace_server
 This benchmark runs the following tests:
 
 1. untraced-server [ repeat 500k callbacks N times within ~30s ]
-2. traced---server [ repeat 500k callbacks N times within ~30s  ]
+2. traced----server [ repeat 500k callbacks N times within ~30s  ]
 
 Both tests attempt to push as many messages as possible to a GenServer process using the `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `untraced-server` test is not being monitored by GenMetrics. The server process within the `traced-server` test is being monitored by GenMetrics. As sampling has not been enabled for this benchmark *all* callbacks on the `traced-server` are monitored.
 
@@ -74,7 +74,7 @@ mix sample_server
 This benchmark runs the following tests:
 
 1. untraced-server [ repeat 500k callbacks N times within ~30s ]
-2. sampled--server [ repeat 500k callbacks N times within ~30s  ]
+2. sampled-server [ repeat 500k callbacks N times within ~30s  ]
 
 Both tests attempt to push as many messages as possible to a GenServer process using the `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `untraced-server` test is not being monitored by GenMetrics. The server process within the `sampled-server` test is being monitored by GenMetrics. Metrics-sampling has been activated for this server using the following monitoring preferences, `opts: [sample_rate: 0.1]`.
 
@@ -118,7 +118,7 @@ mix trace_pipeline
 This benchmark runs the following tests:
 
 1. untraced-pipeline [ repeat 500k msgs N times within ~30s ]
-2. traced---pipeline [ repeat 500k msgs N times within ~30s  ]
+2. traced----pipeline [ repeat 500k msgs N times within ~30s  ]
 
 Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `untraced-pipeline` test are not being monitored by GenMetrics. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. As sampling has not been enabled for this benchmark *all* callbacks within the `traced-pipeline` are monitored.
 
@@ -159,7 +159,7 @@ mix sample_pipeline
 This benchmark runs the following tests:
 
 1. untraced-pipeline [ repeat 500k msgs N times within ~30s ]
-2. sampled--pipeline [ repeat 500k msgs N times within ~30s  ]
+2. sampled-pipeline [ repeat 500k msgs N times within ~30s  ]
 
 Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `untraced-pipeline` test are not being monitored by GenMetrics. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. Metrics-sampling has been activated for this pipeline using the following monitoring preferences, `opts: [sample_rate: 0.1]`.
 
