@@ -33,7 +33,7 @@ This benchmark runs the following tests:
 1. untraced-server [ repeat 500k callbacks N times within ~30s ]
 2. traced----server [ repeat 500k callbacks N times within ~30s  ]
 
-Both tests attempt to push as many messages as possible to a GenServer process using the `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `untraced-server` test is not being monitored by GenMetrics. The server process within the `traced-server` test is being monitored by GenMetrics. As sampling has not been enabled for this benchmark *all* callbacks on the `traced-server` are monitored.
+Both tests attempt to push as many messages as possible to a GenServer process using the `GenServer.call/3` function. These tests each run for approximately 30 seconds. The server process within the `untraced-server` test is not being monitored by GenMetrics. The server process within the `traced-server` test is being monitored by GenMetrics. As metrics-sampling has not been enabled for this benchmark *all* callbacks on the `traced-server` are monitored.
 
 
 ```
@@ -62,7 +62,7 @@ On our test hardware, the `untraced-server` mananged to push approximately 4.5 m
 
 The results indicate a significant runtime overhead has been introduced by the GenMetrics library. As indicated by the results the `traced-server` test performed `2.40x slower`. We can directly attribute this slowdown to the runtime overhead introduced by the GenMetrics library.
 
-While not all applications require metrics-sampling to reduce the runtime overhead associated with GenMetrics, this result strongly suggests this test application is a good candidate for sampling. See the following benchmark to see the immediate and significant positive effects of activating sampling.
+While not all applications require metrics-sampling to reduce the runtime overhead associated with GenMetrics, this result strongly suggests this test application is a good candidate for sampling. See the following benchmark to see the immediate and significant positive effects when sampling is activated.
 
 
 ### GenServer Benchmark 2. bench/sample_server.exs
@@ -120,7 +120,7 @@ This benchmark runs the following tests:
 1. untraced-pipeline [ repeat 500k msgs N times within ~30s ]
 2. traced----pipeline [ repeat 500k msgs N times within ~30s  ]
 
-Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `untraced-pipeline` test are not being monitored by GenMetrics. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. As sampling has not been enabled for this benchmark *all* callbacks within the `traced-pipeline` are monitored.
+Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `untraced-pipeline` test are not being monitored by GenMetrics. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. As metrics-sampling has not been enabled for this benchmark *all* callbacks within the `traced-pipeline` are monitored.
 
 ```
 Elixir 1.4.1
@@ -148,7 +148,7 @@ On our test hardware, the `untraced-pipeline` mananged to push approximately 1.5
 
 The results indicate a significant runtime overhead has been introduced by the GenMetrics library. As indicated by the results the `traced-pipeline` test performed `2.29 slower`. We can directly attribute this slowdown to the runtime overhead introduced by the GenMetrics library.
 
-While not all applications require metrics-sampling to reduce the runtime overhead associated with GenMetrics, this result strongly suggests this test application is a good candidate for sampling. See the following benchmark to see the immediate and significant positive effects of activating sampling.
+While not all applications require metrics-sampling to reduce the runtime overhead associated with GenMetrics, this result strongly suggests this test application is a good candidate for sampling. See the following benchmark to see the immediate and significant positive effects when sampling is activated.
 
 ### GenStage Benchmark 2. bench/sample_pipeline.exs
 
@@ -161,7 +161,7 @@ This benchmark runs the following tests:
 1. untraced-pipeline [ repeat 500k msgs N times within ~30s ]
 2. sampled-pipeline [ repeat 500k msgs N times within ~30s  ]
 
-Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `untraced-pipeline` test are not being monitored by GenMetrics. The GenStage processes within the `traced-pipeline` test are being monitored by GenMetrics. Metrics-sampling has been activated for this pipeline using the following monitoring preferences, `opts: [sample_rate: 0.1]`.
+Each test attempts to push as many messages as possible through a GenStage pipeline. These tests each run for approximately 30 seconds. The GenStage processes within the `untraced-pipeline` test are not being monitored by GenMetrics. The GenStage processes within the `sampled-pipeline` test are being monitored by GenMetrics. Metrics-sampling has been activated for this pipeline using the following monitoring preferences, `opts: [sample_rate: 0.1]`.
 
 ```
 Elixir 1.4.1
@@ -187,7 +187,7 @@ Comparison:
 
 On our test hardware, both tests managed to push approximately 2 million messages to their respective GenServer processes within the 30 second test window. That's approximately 67k messages-per-second.
 
-In this benchmark, the `sampled-pipeline` test performed just `1.08x slower` than the `untraced-pipeline` test. Compared to the `traced-pipeline` test in the previous benchmark that performed `2.29x sower` we can see the significant, positive impact activating metrics-sampling has on reducing the runtime overhead associated with GenMetrics.
+In this benchmark, the `sampled-pipeline` test performed just `1.08x slower` than the `untraced-pipeline` test. Compared to the `sampled-pipeline` test in the previous benchmark that performed `2.29x sower` we can see the significant, positive impact activating metrics-sampling has on reducing the runtime overhead associated with GenMetrics.
 
 
 ## GenMetrics + BEAM Garbage Collection
