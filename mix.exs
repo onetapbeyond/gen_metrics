@@ -41,11 +41,10 @@ defmodule GenMetrics.Mixfile do
   end
 
   defp aliases do
-    [bench_cluster: "run ./bench/bench_cluster.exs",
-     bench_cluster_sync: "run ./bench/bench_cluster_sync.exs",
-     bench_cluster_flow: "run ./bench/bench_cluster_flow.exs",
-     bench_pipeline: "run ./bench/bench_pipeline.exs",
-     bench_pipeline_sync: "run ./bench/bench_pipeline_sync.exs"]
+    [trace_cluster: "run ./bench/trace_cluster.exs",
+     sample_cluster: "run ./bench/sample_cluster.exs",
+     trace_pipeline: "run ./bench/trace_pipeline.exs",
+     sample_pipeline: "run ./bench/sample_pipeline.exs"]
   end
 
   defp description do

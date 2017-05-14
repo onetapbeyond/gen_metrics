@@ -44,11 +44,11 @@ defmodule GenMetrics.GenServer.Manager do
     do_close_stats_metric(cluster, metrics, {mod, pid, events, ts})
   end
 
-  def as_window(metrics, gen_stats) do
-    window = %Window{summary: build_server_summary(metrics)}
+  def as_window(metrics, gen_stats, sample_rate) do
+    window = %Window{summary: build_server_summary(metrics, sample_rate)}
     if gen_stats do
       with server_metrics <- build_server_metrics(metrics),
-           server_stats <- build_server_stats(server_metrics),
+           server_stats <- build_server_stats(server_metrics, sample_rate),
       do: %Window{window | stats: server_stats}
     else
       window
@@ -110,13 +110,13 @@ defmodule GenMetrics.GenServer.Manager do
     end
   end
 
-  defp build_server_summary(metrics) do
+  defp build_server_summary(metrics, sample_rate) do
     for {server, pids} <- metrics.servers, pid <- pids, into: [] do
       mkeys = for key <- @call_cast_info, do: as_metric_key(pid, key)
       metrics_on_pid = for mkey <- mkeys do
         Map.get(metrics.summary_paired, mkey, Metric.no_pair)
       end
-      summary = generate_server_summary(metrics_on_pid)
+      summary = generate_server_summary(metrics_on_pid, sample_rate)
       %Summary{summary | name: server, pid: pid}
     end
   end
@@ -129,45 +129,51 @@ defmodule GenMetrics.GenServer.Manager do
     end
   end
 
-  defp build_server_stats([]), do: []
-  defp build_server_stats(server_metrics) do
+  defp build_server_stats([], _), do: []
+  defp build_server_stats(server_metrics, sample_rate) do
     for {module, pid, [calls, casts, infos]} <- server_metrics do
       %Server{name: module, pid: pid,
-              calls: generate_metric_stats(calls, length(calls)),
-              casts: generate_metric_stats(casts, length(casts)),
-              infos: generate_metric_stats(infos, length(infos))}
+              calls: generate_metric_stats(calls, length(calls), sample_rate),
+              casts: generate_metric_stats(casts, length(casts), sample_rate),
+              infos: generate_metric_stats(infos, length(infos), sample_rate)}
     end
   end
 
-  defp generate_server_summary([calls, casts, infos]) do
-    do_generate_server_summary(calls, casts, infos)
+  defp generate_server_summary([calls, casts, infos], sample_rate) do
+    do_generate_server_summary(calls, casts, infos, sample_rate)
   end
 
-  defp generate_server_summary(server = %Server{}) do
+  defp generate_server_summary(server = %Server{}, sample_rate) do
     calls = {server.calls.calls, server.calls.total, 0}
     casts = {server.casts.calls, server.casts.total, 0}
     infos = {server.infos.calls, server.casts.total, 0}
-    do_generate_server_summary(calls, casts, infos)
+    do_generate_server_summary(calls, casts, infos, sample_rate)
   end
 
   defp do_generate_server_summary({calls, tcalls}, {casts, tcasts},
-    {infos, tinfos}) do
-    %Summary{calls: calls, casts: casts, infos: infos,
-                   time_on_calls: Runtime.nano_to_milli(tcalls),
-                   time_on_casts: Runtime.nano_to_milli(tcasts),
-                   time_on_infos: Runtime.nano_to_milli(tinfos)}
+    {infos, tinfos}, sample_rate) do
+    srate_multiplier = 1 / sample_rate
+    %Summary{calls: round(calls * srate_multiplier),
+             casts: round(casts * srate_multiplier),
+             infos: round(infos * srate_multiplier),
+             time_on_calls: Runtime.nano_to_milli(round(tcalls * srate_multiplier)),
+             time_on_casts: Runtime.nano_to_milli(round(tcasts * srate_multiplier)),
+             time_on_infos: Runtime.nano_to_milli(round(tinfos * srate_multiplier))}
   end
 
-  defp generate_metric_stats([], _), do: generate_stats([], 0)
-  defp generate_metric_stats(metrics, len) do
+  defp generate_metric_stats([], _, sample_rate), do: generate_stats([], 0, sample_rate)
+  defp generate_metric_stats(metrics, len, sample_rate) do
     metric_durations =
       metrics |> Enum.map(fn metric -> metric.duration end) |> Enum.sort
-    generate_stats(metric_durations, len)
+    generate_stats(metric_durations, len, sample_rate)
   end
 
-  defp generate_stats(data, len) do
-    %Stats{callbacks: len, min: Math.min(data), max: Math.max(data),
-           total: Math.sum(data), mean: Math.mean(data, len),
+  defp generate_stats(data, len, sample_rate) do
+    srate_multiplier = 1 / sample_rate
+    %Stats{callbacks: round(len * srate_multiplier),
+           min: Math.min(data), max: Math.max(data),
+           total: round(Math.sum(data) * srate_multiplier),
+           mean: Math.mean(data, len),
            stdev: Math.stdev(data, len), range: Math.range(data)}
   end
 

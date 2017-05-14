@@ -72,7 +72,10 @@ Metrics.Consumer.start_link
 
 cluster = %Cluster{name: "demo",
                    servers: [Demo.Server],
-                   opts: [statistics: true, window_interval: 2000]}
+                   opts: [statistics: true,
+                          sample_rate: 0.95,
+                          window_interval: 2000,
+                          synchronous: true]}
 
 {:ok, _pid} = GenMetrics.monitor_cluster(cluster)
 
