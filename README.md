@@ -72,6 +72,30 @@ Metrics are published by a dedicated GenMetrics reporting process. Any applicati
 
 Detailed statistical metrics data per process are also available. See the [documentation](https://hexdocs.pm/gen_metrics) for details.
 
+## Quick Look: GenMetrics Sampling
+
+Given an application with the following GenServers: `Session.Server`, `Logging.Server`, activate metrics-sampling for the server cluster as follows:
+
+```elixir
+alias GenMetrics.GenServer.Cluster
+cluster = %Cluster{name: "demo",
+                   servers: [Session.Server, Logging.Server],
+                   opts: [sample_rate: 0.3]}
+GenMetrics.monitor_cluster(cluster)
+```
+
+Given a GenStage application with the following stages: `Data.Producer`, `Data.Scrubber`, `Data.Analyzer` and a `Data.Consumer`, activate metrics-sampling for the entire pipeline as follows:
+
+```elixir
+alias GenMetrics.GenStage.Pipeline
+pipeline = %Pipeline{name: "demo",
+                     producer: [Data.Producer],
+                     producer_consumer: [Data.Scrubber, Data.Analyzer],
+                     consumer: [Data.Consumer],
+                     opts: [sample_rate: 0.1]}
+GenMetrics.monitor_pipeline(pipeline)
+```
+
 ## Quick Look: Metrics Reporting
 
 Redirect your GenServer cluster metrics data to the Datadog service as follows:
@@ -109,6 +133,10 @@ def deps do
   [{:gen_metrics, "~> 0.2.0"}]
 end
 ```
+
+## Benchmarks
+
+For those of you curious about the performance impact `gen_metrics` has on the servers and pipelines it is monitoring, we've put together a number of benchmarks along with a detailed performance analysis which you can [find here](bench/README.md).
 
 ## Examples
 
