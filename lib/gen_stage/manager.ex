@@ -42,11 +42,11 @@ defmodule GenMetrics.GenStage.Manager do
     do_close_stats_metric(pipeline, metrics, {mod, pid, events, ts})
   end
 
-  def as_window(metrics, gen_stats) do
-    window = %Window{summary: build_stage_summary(metrics)}
+  def as_window(metrics, gen_stats, sample_rate) do
+    window = %Window{summary: build_stage_summary(metrics, sample_rate)}
     if gen_stats do
       with stage_metrics <- build_stage_metrics(metrics),
-           stage_stats <- build_stage_stats(stage_metrics),
+           stage_stats <- build_stage_stats(stage_metrics, sample_rate),
       do: %Window{window | stats: stage_stats}
     else
       window
@@ -105,10 +105,10 @@ defmodule GenMetrics.GenStage.Manager do
     end
   end
 
-  defp build_stage_summary(metrics) do
+  defp build_stage_summary(metrics, sample_rate) do
     for {stage, pids} <- metrics.stages, pid <- pids, into: [] do
       summary = generate_stage_summary(Map.get(metrics.summary_paired,
-            pid, Metric.no_pair))
+            pid, Metric.no_pair), sample_rate)
       %Summary{summary | name: stage, pid: pid}
     end
   end
@@ -119,52 +119,59 @@ defmodule GenMetrics.GenStage.Manager do
     end
   end
 
-  defp build_stage_stats([]), do: []
-  defp build_stage_stats(stage_metrics) do
+  defp build_stage_stats([], _), do: []
+  defp build_stage_stats(stage_metrics, sample_rate) do
     for {module, pid, metrics} <- stage_metrics do
       len = length(metrics)
       %Stage{name: module, pid: pid,
-             demand: generate_demand_stats(metrics, len),
-             events: generate_events_stats(metrics, len),
-             timings: generate_timings_stats(metrics, len)}
+             demand: generate_demand_stats(metrics, len, sample_rate),
+             events: generate_events_stats(metrics, len, sample_rate),
+             timings: generate_timings_stats(metrics, len, sample_rate)}
     end
   end
 
-  defp generate_stage_summary({calls, demand, events, time_on_callbacks}) do
+  defp generate_stage_summary({calls, demand, events, time_on_callbacks},
+    sample_rate) do
     do_generate_stage_summary(calls, demand, events,
-      Runtime.nano_to_milli(time_on_callbacks))
+      Runtime.nano_to_milli(time_on_callbacks), sample_rate)
   end
 
-  defp generate_stage_summary(stage = %Stage{}) do
+  defp generate_stage_summary(stage = %Stage{}, sample_rate) do
     do_generate_stage_summary(stage.demand.calls,
       stage.demand.total, stage.events.total,
-      Runtime.micro_to_milli(stage.timings.total))
+      Runtime.micro_to_milli(stage.timings.total), sample_rate)
   end
 
-  defp do_generate_stage_summary(calls, demand, events, time_on_callbacks) do
-    %Summary{callbacks: calls,
-             demand: demand, events: events,
-             time_on_callbacks: time_on_callbacks}
+  defp do_generate_stage_summary(calls, demand, events,
+    time_on_callbacks, sample_rate) do
+    srate_multiplier = 1 / sample_rate
+    %Summary{callbacks: round(calls * srate_multiplier),
+             demand: round(demand * srate_multiplier),
+             events: round(events * srate_multiplier),
+             time_on_callbacks: round(time_on_callbacks * srate_multiplier)}
   end
 
-  defp generate_demand_stats(metrics, len) do
+  defp generate_demand_stats(metrics, len, sample_rate) do
     demand = metrics |> Enum.map(& &1.demand) |> Enum.sort
-    generate_stats(demand, len)
+    generate_stats(demand, len, sample_rate)
   end
 
-  defp generate_events_stats(metrics, len) do
+  defp generate_events_stats(metrics, len, sample_rate) do
     events = metrics |> Enum.map(& &1.events) |> Enum.sort
-    generate_stats(events, len)
+    generate_stats(events, len, sample_rate)
   end
 
-  defp generate_timings_stats(metrics, len) do
+  defp generate_timings_stats(metrics, len, sample_rate) do
     durations = metrics |> Enum.map(& &1.duration) |> Enum.sort
-    generate_stats(durations, len)
+    generate_stats(durations, len, sample_rate)
   end
 
-  defp generate_stats(data, len) do
-    %Stats{callbacks: len, min: Math.min(data), max: Math.max(data),
-           total: Math.sum(data), mean: Math.mean(data, len),
+  defp generate_stats(data, len, sample_rate) do
+    srate_multiplier = 1 / sample_rate
+    %Stats{callbacks: round(len * srate_multiplier),
+           min: Math.min(data), max: Math.max(data),
+           total: round(Math.sum(data) * srate_multiplier),
+           mean: Math.mean(data, len),
            stdev: Math.stdev(data, len), range: Math.range(data)}
   end
 

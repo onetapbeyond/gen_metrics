@@ -17,7 +17,7 @@ defmodule GenMetrics.Utils.StatsPush do
   @stats  ".stats"
   @timing ".timing"
   @total  ".total"
-  @sample_rate Application.get_env(:gen_metrics, :sample_rate, 1.0)
+  @sample_rate 1.0
 
   def statsd(context, mod, pid, fun, %GenServer.Metric{} = metric) do
     base = as_label(@genserver_prefix, context, mod, pid, fun)

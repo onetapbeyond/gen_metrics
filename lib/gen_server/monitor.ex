@@ -9,7 +9,6 @@ defmodule GenMetrics.GenServer.Monitor do
 
   @moduledoc false
   @call_cast_info [:handle_call, :handle_cast, :handle_info]
-  @window_interval_default 1000
 
   defstruct cluster: %Cluster{}, metrics: nil, start: 0, duration: 0
 
@@ -81,12 +80,26 @@ defmodule GenMetrics.GenServer.Monitor do
   def handle_info(:rollover_metrics_window, state) do
     now = :erlang.system_time
     state = %Monitor{state | duration: Runtime.nano_to_milli(now - state.start)}
-    window = Manager.as_window(state.metrics, statistics?(state.cluster))
+    window = Manager.as_window(state.metrics,
+      Runtime.statistics?(state.cluster), Runtime.sample_rate(state.cluster))
     window = %Window{window | cluster: state.cluster,
                      start: state.start, duration: state.duration}
     Reporter.push(GenMetrics.GenServer.Reporter, window)
-    Process.send_after(self(), :rollover_metrics_window, window_interval(state))
+    Process.send_after(self(),
+      :rollover_metrics_window, Runtime.window_interval(state.cluster))
+    if Runtime.sampling?(state.cluster) do
+      activate_tracing(state.cluster)
+      Process.send_after(self(),
+        :silence_metrics_window, Runtime.sample_interval(state.cluster))
+    end
     {:noreply, initialize_monitor(state.cluster, state.metrics)}
+  end
+
+  # Sampling window is closed for current metrics windows
+  # so temporarily silence tracing.
+  def handle_info(:silence_metrics_window, state) do
+    activate_tracing(state.cluster, true)
+    {:noreply, state}
   end
 
   # Catch-all for calls not intercepted by monitor.
@@ -111,24 +124,33 @@ defmodule GenMetrics.GenServer.Monitor do
 
   # Initialize periodic callback for metrics reporting and window rollover.
   defp start_monitor(state) do
-    Process.send_after(self(), :rollover_metrics_window, window_interval(state))
+    Process.send_after(self(),
+      :rollover_metrics_window, Runtime.window_interval(state.cluster))
+    if Runtime.sampling?(state.cluster) do
+      Process.send_after(self(),
+        :silence_metrics_window, Runtime.sample_interval(state.cluster))
+    end
     {:ok, state}
   end
 
   # Activate tracing for servers within cluster.
-  defp activate_tracing(cluster) do
-    :erlang.trace(:all, true, [:call, :monotonic_timestamp])
+  defp activate_tracing(cluster, silent \\ false) do
 
-    for server <- cluster.servers do
+    if silent do
+      :erlang.trace(:processes, false, [:call, :monotonic_timestamp])
+    else
+      :erlang.trace(:processes, true, [:call, :monotonic_timestamp])
+      for server <- cluster.servers do
 
-      if synchronous?(cluster) do
-        :erlang.trace_pattern({server, :handle_call, 3},
+        if Runtime.synchronous?(cluster) do
+          :erlang.trace_pattern({server, :handle_call, 3},
+            [{:_, [], [{:return_trace}]}])
+        end
+        :erlang.trace_pattern({server, :handle_cast, 2},
+          [{:_, [], [{:return_trace}]}])
+        :erlang.trace_pattern({server, :handle_info, 2},
           [{:_, [], [{:return_trace}]}])
       end
-      :erlang.trace_pattern({server, :handle_cast, 2},
-        [{:_, [], [{:return_trace}]}])
-      :erlang.trace_pattern({server, :handle_info, 2},
-        [{:_, [], [{:return_trace}]}])
     end
 
     {:ok, cluster}
@@ -182,7 +204,7 @@ defmodule GenMetrics.GenServer.Monitor do
       Manager.open_summary_metric(state.metrics, mod, pid, fun, ts)
     state = %Monitor{state | metrics: metrics}
 
-    if statistics?(state.cluster) do
+    if Runtime.statistics?(state.cluster) do
       metrics =
         Manager.open_stats_metric(state.metrics, {mod, pid, fun, ts})
       %Monitor{state | metrics: metrics}
@@ -196,7 +218,7 @@ defmodule GenMetrics.GenServer.Monitor do
     metrics = Manager.close_summary_metric(state.metrics, pid, events, ts)
     state = %Monitor{state | metrics: metrics}
 
-    if statistics?(state.cluster) do
+    if Runtime.statistics?(state.cluster) do
       metrics = Manager.close_stats_metric(state.cluster,
         state.metrics, {mod, pid, events, ts})
       %Monitor{state | metrics: metrics}
@@ -204,16 +226,5 @@ defmodule GenMetrics.GenServer.Monitor do
       state
     end
   end
-
-  # Return interval for monitor window rollover.
-  defp window_interval(state) do
-    state.cluster.opts[:window_interval] || @window_interval_default
-  end
-
-  # Return true if monitor is required to generate optional statistics.
-  defp statistics?(cluster), do: cluster.opts[:statistics] || false
-
-  # Return true if monitor is required to trace synchronous calls.
-  defp synchronous?(cluster), do: cluster.opts[:synchronous] || false
 
 end

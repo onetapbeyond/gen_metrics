@@ -26,7 +26,7 @@ by introspection.
 
 ```elixir
 def deps do
-  [{:gen_metrics, "~> 0.2.0"}]
+  [{:gen_metrics, "~> 0.3.0"}]
 end
 ```
 
@@ -69,6 +69,25 @@ Point out that GenMetrics provides it's own supervision tree.
 
 +++
 
+#### GenMetrics Sampling
+
+```elixir
+alias GenMetrics.GenServer.Cluster
+
+cluster = %Cluster{name: "demo",
+                   servers: [Session.Server, Logging.Server],
+                   opts: [sample_rate: 0.2]}
+
+GenMetrics.monitor_cluster(cluster)
+
+# Here Session.Server and Logging.Server are example GenServers.
+```
+
+Note:
+Sampling reduces runtime overhead of GenMetrics monitoring agent.
+
++++
+
 #### GenServer Summary Metrics
 
 #### Sample Metrics Data
@@ -90,6 +109,49 @@ Point out that GenMetrics provides it's own supervision tree.
 
 Note:
 Provide example by explaining how *calls* and *time_on_calls* relate.
++++
+
+#### GenServer Statistical Metrics
+
+#### Optional Statsd Activation
+
+```elixir
+alias GenMetrics.GenServer.Cluster
+
+cluster = %Cluster{name: "demo",
+                   servers: [Session.Server, Logging.Server],
+                   opts: [statistics: :statsd]}
+
+GenMetrics.monitor_cluster(cluster)
+
+# Here Session.Server and Logging.Server are example GenServers.
+```
+
+Note:
+Explain `:statsd` integration with analysis and visualization
+tools such as Grafana and Datadog.
+
++++
+
+#### GenServer Statistical Metrics
+
+#### Optional Datadog Activation
+
+```elixir
+alias GenMetrics.GenServer.Cluster
+
+cluster = %Cluster{name: "demo",
+                   servers: [Session.Server, Logging.Server],
+                   opts: [statistics: :datadog]}
+
+GenMetrics.monitor_cluster(cluster)
+
+# Here Session.Server and Logging.Server are example GenServers.
+```
+
+Note:
+Mention `:datadog` tagging feature is automatically activated
+to support filtering on individual GenServer clusters.
 
 +++
 
@@ -179,64 +241,6 @@ and calculated. Recommend judicious use.
 # Statistical timings measured in microseconds (µs).
 ```
 
-+++
-
-#### GenServer Statistical Metrics
-
-#### Optional Statsd Activation
-
-```elixir
-alias GenMetrics.GenServer.Cluster
-
-cluster = %Cluster{name: "demo",
-                   servers: [Session.Server, Logging.Server],
-                   opts: [statistics: :statsd]}
-
-GenMetrics.monitor_cluster(cluster)
-
-# Here Session.Server and Logging.Server are example GenServers.
-```
-
-Note:
-Explain `:statsd` integration with analysis and visualization
-tools such as Grafana and Datadog.
-
-+++
-
-#### GenServer Statistical Metrics
-
-#### Optional Datadog Activation
-
-```elixir
-alias GenMetrics.GenServer.Cluster
-
-cluster = %Cluster{name: "demo",
-                   servers: [Session.Server, Logging.Server],
-                   opts: [statistics: :datadog]}
-
-GenMetrics.monitor_cluster(cluster)
-
-# Here Session.Server and Logging.Server are example GenServers.
-```
-
-Note:
-Mention `:datadog` tagging feature is automatically activated
-to support filtering on individual GenServer clusters.
-
-+++
-
-#### StatsD Sampling
-
-Metrics sampling supported as follows:
-
-
-```
-config :gen_metrics, sample_rate: 0.8
-```
-
-Note:
-Recommend reduction in sampling rate as load increases.
-
 ---
 
 ### GenStage Metrics
@@ -278,6 +282,28 @@ partial pipelines.
 
 +++
 
+#### GenStage Sampling
+
+```elixir
+alias GenMetrics.GenStage.Pipeline
+
+pipeline = %Pipeline{name: "demo",
+                     producer: [Data.Producer],
+                     producer_consumer:
+                     [Data.Scrubber, Data.Analyzer],
+                     consumer: [Data.Consumer],
+                     opts: [sample_rate: 0.1]}
+
+GenMetrics.monitor_pipeline(pipeline)
+
+# Here Data.* are simply example GenStages.
+```
+
+Note:
+Sampling reduces runtime overhead of the GenMetrics monitoring agent.
+
++++
+
 #### GenStage Summary Metrics
 
 #### Sample Metrics Data
@@ -298,6 +324,52 @@ partial pipelines.
 Note:
 Explain *callbacks*, *demand*, and *events* concepts and
 how they are reflected in the metrics data shown.
+
++++
+
+#### GenStage Statistical Metrics
+
+#### Optional Statsd Activation
+
+```elixir
+alias GenMetrics.GenStage.Pipeline
+
+pipeline = %Pipeline{name: "demo",
+                     producer_consumer:
+                     [Data.Scrubber, Data.Analyzer],
+                     opts: [statistics: :statsd]}
+
+GenMetrics.monitor_pipeline(pipeline)
+
+# Here Data.Scrubber and Data.Analyzer are example GenStages.
+```
+
+Note:
+Explain `:statsd` integration with analysis and visualization
+tools such as Grafana and Datadog.
+
++++
+
+#### GenStage Statistical Metrics
+
+#### Optional Datadog Activation
+
+```elixir
+alias GenMetrics.GenStage.Pipeline
+
+pipeline = %Pipeline{name: "demo",
+                     producer_consumer:
+                     [Data.Scrubber, Data.Analyzer],
+                     opts: [statistics: :datadog]}
+
+GenMetrics.monitor_pipeline(pipeline)
+
+# Here Data.Scrubber and Data.Analyzer are example GenStages.
+```
+
+Note:
+Mention `:datadog` tagging feature is automatically activated
+to support filtering on individual GenStage pipelines.
 
 +++
 
@@ -383,66 +455,6 @@ and *timings* as we will see on the following slides.
 
 # Statistical timings measured in microseconds (µs).
 ```
-
-+++
-
-#### GenStage Statistical Metrics
-
-#### Optional Statsd Activation
-
-```elixir
-alias GenMetrics.GenStage.Pipeline
-
-pipeline = %Pipeline{name: "demo",
-                     producer_consumer:
-                     [Data.Scrubber, Data.Analyzer],
-                     opts: [statistics: :statsd]}
-
-GenMetrics.monitor_pipeline(pipeline)
-
-# Here Data.Scrubber and Data.Analyzer are example GenStages.
-```
-
-Note:
-Explain `:statsd` integration with analysis and visualization
-tools such as Grafana and Datadog.
-
-+++
-
-#### GenStage Statistical Metrics
-
-#### Optional Datadog Activation
-
-```elixir
-alias GenMetrics.GenStage.Pipeline
-
-pipeline = %Pipeline{name: "demo",
-                     producer_consumer:
-                     [Data.Scrubber, Data.Analyzer],
-                     opts: [statistics: :datadog]}
-
-GenMetrics.monitor_pipeline(pipeline)
-
-# Here Data.Scrubber and Data.Analyzer are example GenStages.
-```
-
-Note:
-Mention `:datadog` tagging feature is automatically activated
-to support filtering on individual GenStage pipelines.
-
-+++
-
-#### StatsD Sampling
-
-Metrics sampling supported as follows:
-
-
-```
-config :gen_metrics, sample_rate: 0.8
-```
-
-Note:
-Recommend reduction in sampling rate as load increases.
 
 ---
 
