@@ -18,7 +18,7 @@ GenMetrics depends on Erlang tracing to collect runtime metrics for your applica
 
 **DO NOT ACTIVATE GenMetrics IN LONG-RUNNING PRODUCTION APPLICATIONS.**
 
-To understand and observe resource use when GenMetrics is activivated use the `mix infinite_server` or `mix infinite_pipeline` tasks which automatically launch the `:observer` tool which allows you to profile BEAM metrics.
+To understand and observe resource use when GenMetrics is activated use the `mix infinite_server` or `mix infinite_pipeline` tasks which automatically launch the `:observer` tool which allows you to profile BEAM metrics.
 
 ## GenMetrics + Synchronous / Asynchronous Callbacks
 
