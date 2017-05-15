@@ -280,6 +280,8 @@ Note:
 Mention GenMetrics monitoring supports both complete and
 partial pipelines.
 
++++
+
 #### GenStage Sampling
 
 ```elixir
