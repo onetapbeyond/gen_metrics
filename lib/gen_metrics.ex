@@ -3,7 +3,7 @@ defmodule GenMetrics do
   @moduledoc """
   Runtime metrics for `GenServer` and `GenStage` applications.
 
-  **Important!**
+  **Important:**
   GenMetrics is not suitable for long-running production environments.
   [See here](https://github.com/onetapbeyond/gen_metrics#benchmarks).
 
