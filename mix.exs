@@ -44,7 +44,9 @@ defmodule GenMetrics.Mixfile do
     [trace_cluster: "run ./bench/trace_cluster.exs",
      sample_cluster: "run ./bench/sample_cluster.exs",
      trace_pipeline: "run ./bench/trace_pipeline.exs",
-     sample_pipeline: "run ./bench/sample_pipeline.exs"]
+     sample_pipeline: "run ./bench/sample_pipeline.exs",
+     infinite_server: "run ./bench/infinite_server.exs",
+     infinite_pipeline: "run ./bench/infinite_pipeline.exs"]
   end
 
   defp description do

@@ -12,7 +12,13 @@ To activate metrics-sampling for your server or pipeline simply specify the `sam
 
 It is important to understand that when sampling is disabled, metrics data reflect the exact behaviour of the processes being monitored. When sampling is enabled, metrics data reflect an approximation of the behaviour of the processes being monitored.
 
-Note, GenMetrics depends on Erlang tracing to collect runtime metrics for your application. One consequence of this depedency is that tail-call optimization is automatically disabled by the tracing agent. Given this, activating metrics-sampling is *required* for high-callback applications or memory exhaustion due to unbounded stack growth is inevitable.
+**IMPORTANT!**
+
+GenMetrics depends on Erlang tracing to collect runtime metrics for your application. One consequence of this depedency is that tail-call optimization is automatically disabled by the tracing agent. Given this, eventual resource exhaustion due to unbounded stack growth for long-running applications is inevitable. Resource exhaustion may be significantly delayed by activating metrics-sampling. But such resource exhaustion can not be avoided indefinitely.
+
+**DO NOT ACTIVATE GenMetrics IN LONG-RUNNING PRODUCTION APPLICATIONS.**
+
+To understand and observe resource use when GenMetrics is activivated use the `mix infinite_server` or `mix infinite_pipeline` tasks which automatically launch the `:observer` tool which allows you to profile BEAM metrics.
 
 ## GenMetrics + Synchronous / Asynchronous Callbacks
 
@@ -188,7 +194,6 @@ Comparison:
 On our test hardware, both tests managed to push approximately 2 million messages to their respective GenServer processes within the 30 second test window. That's approximately 67k messages-per-second.
 
 In this benchmark, the `sampled-pipeline` test performed just `1.08x slower` than the `untraced-pipeline` test. Compared to the `sampled-pipeline` test in the previous benchmark that performed `2.29x sower` we can see the significant, positive impact activating metrics-sampling has on reducing the runtime overhead associated with GenMetrics.
-
 
 ## GenMetrics + BEAM Garbage Collection
 
