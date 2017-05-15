@@ -325,7 +325,7 @@ Note:
 Explain *callbacks*, *demand*, and *events* concepts and
 how they are reflected in the metrics data shown.
 
-++++
++++
 
 #### GenStage Statistical Metrics
 
