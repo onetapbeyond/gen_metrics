@@ -130,7 +130,7 @@ GenStage requires Elixir v1.4. Just add `:gen_metrics` to your list of dependenc
 
 ```elixir
 def deps do
-  [{:gen_metrics, "~> 0.2.0"}]
+  [{:gen_metrics, "~> 0.3.0"}]
 end
 ```
 
